@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaidStore - متجر التطبيقات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #apps-container {
+            margin-top: 20px;
+        }
+        .app-card {
+            background: white;
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: right;
+        }
+        .btn {
+            background: #10b981;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SaidStore 📱</h1>
+        <p>متجرك الخاص لتحميل تطبيقات الأندرويد</p>
+    </header>
+
+    <main id="apps-container">
+        <p>جاري تحميل التطبيقات من السيرفر...</p>
+    </main>
+
+    <!-- ربط Firebase من مكتبة السيرفر (CDN) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // إعدادات السيرفر الخاصة بك
+        const firebaseConfig = {
+          apiKey: "AIzaSyA9CONWJPZkD_v6Je08P58QAKidcXXwkOE",
+          authDomain: "said-store-a422e.firebaseapp.com",
+          projectId: "said-store-a422e",
+          storageBucket: "said-store-a422e.firebasestorage.app",
+          messagingSenderId: "1096798610792",
+          appId: "1:1096798610792:web:f127c55882aee152c9a2dd",
+          measurementId: "G-775957Y0DZ"
+        };
+
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadApps() {
+            const container = document.getElementById('apps-container');
+            container.innerHTML = "<p>جاري جلب التطبيقات...</p>";
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "apps"));
+                if (querySnapshot.empty) {
+                    container.innerHTML = "<p>لا توجد تطبيقات في السيرفر حالياً. أضف بعض التطبيقات من لوحة تحكم Firebase!</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+                querySnapshot.forEach((doc) => {
+                    const appData = doc.data();
+                    container.innerHTML += `
+                        <div class="app-card">
+                            <h3>${appData.name || 'تطبيق بدون اسم'}</h3>
+                            <p>${appData.description || 'لا يوجد وصف'}</p>
+                            <a href="${appData.downloadUrl || '#'}" class="btn" target="_blank">تحميل APK</a>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error("خطأ في جلب البيانات: ", error);
+                container.innerHTML = "<p>حدث خطأ أثناء الاتصال بالسيرفر.</p>";
+            }
+        }
+
+        loadApps();
+    </script>
+
+</body>
+</html>@SAID_ANTIBAN
