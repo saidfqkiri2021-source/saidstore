@@ -12,60 +12,171 @@
             padding: 20px;
             text-align: center;
         }
-        header {
+        /* شاشة الحماية (الباسورد) */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+        .lock-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: #333;
+            width: 90%;
+            max-width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .lock-box input {
+            width: 80%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .lock-box button {
             background: #2563eb;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #error-msg {
+            color: red;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* تصميم المتجر الأساسي */
+        #store-content {
+            display: none; /* مخفي حتى يتكتب الكود الصحيح */
+        }
+        header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(37,99,235,0.3);
         }
         #apps-container {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .app-card {
             background: white;
             padding: 15px;
-            margin: 15px auto;
-            border-radius: 8px;
+            margin: 15px;
+            border-radius: 12px;
+            width: 100%;
             max-width: 400px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: right;
+            box-sizing: border-box;
+            border-right: 5px solid #10b981;
+        }
+        .app-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            float: left;
+            background: #eee;
+        }
+        .app-info {
+            overflow: hidden;
+        }
+        .app-info h3 {
+            margin: 0 0 5px 0;
+            color: #1f2937;
+        }
+        .app-info p {
+            margin: 0 0 10px 0;
+            color: #4b5563;
+            font-size: 14px;
         }
         .btn {
             background: #10b981;
             color: white;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
+            font-size: 14px;
+            transition: 0.2s;
         }
-        /* إخفاء العلامة المائية للـ Hosting */
+        .btn:hover {
+            background: #059669;
+        }
+        /* إخفاء العلامة المائية */
         iframe#netlify-badge, div.netlify-badge, a[href*="netlify.com"] {
             display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1></h1>
-        <p></p>
-    </header>
+    <!-- شاشة إدخال الكود السري -->
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h2>SaidStore 🔐</h2>
+            <p>المرجو إدخال كود الدخول للمتجر</p>
+            <input type="password" id="passcode" placeholder="أدخل الكود هنا">
+            <br>
+            <button onclick="checkPassword()">دخول</button>
+            <p id="error-msg">الكود غير صحيح، حاول مجدداً!</p>
+        </div>
+    </div>
 
-    <main id="apps-container">
-        <p>جاري تحميل التطبيقات من السيرفر...</p>
-    </main>
+    <!-- محتوى المتجر (لا يظهر إلا بعد إدخال الكود الصحيح) -->
+    <div id="store-content">
+        <header>
+            <h1>SaidStore 📱</h1>
+            <p></p></p></p></p>
+        </header>
 
-    <!-- ربط Firebase من مكتبة السيرفر (CDN) -->
+        <main id="apps-container">
+            <p>جاري تحميل التطبيقات من السيرفر...</p>
+        </main>
+    </div>
+
+    <!-- سكريبت الحماية وجلب البيانات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إعدادات السيرفر الخاصة بك
+        // دالة التحقق من كلمة المرور (الكود السري هو: 1234 - يمكنك تغييره)
+        window.checkPassword = function() {
+            const enteredPass = document.getElementById('passcode').value;
+            const correctPass = "SAIDANTIBAN20"; // <--- الكود السري الخاص بك (غيره كيف بغيتي)
+
+            if (enteredPass === correctPass) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('store-content').style.display = 'block';
+                loadApps(); // تحميل التطبيقات فقط بعد نجاح الدخول
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        };
+
         const firebaseConfig = {
           apiKey: "AIzaSyA9CONWJPZkD_v6Je08P58QAKidcXXwkOE",
           authDomain: "said-store-a422e.firebaseapp.com",
@@ -76,29 +187,35 @@
           measurementId: "G-775957Y0DZ"
         };
 
-        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         async function loadApps() {
             const container = document.getElementById('apps-container');
-            container.innerHTML = "<p>جاري جلب التطبيقات...</p>";
             
             try {
                 const querySnapshot = await getDocs(collection(db, "apps"));
                 if (querySnapshot.empty) {
-                    container.innerHTML = "<p>لا توجد تطبيقات في السيرفر حالياً. أضف بعض التطبيقات من لوحة تحكم Firebase!</p>";
+                    container.innerHTML = "<p>لا توجد تطبيقات في السيرفر حالياً.</p>";
                     return;
                 }
 
                 container.innerHTML = "";
                 querySnapshot.forEach((doc) => {
                     const appData = doc.data();
+                    const appName = appData.name || 'تطبيق بدون اسم';
+                    const appDesc = appData.description || 'لا يوجد وصف';
+                    const appLink = appData.downloadUrl || '#';
+                    const appImage = appData.imageUrl || 'https://via.placeholder.com/80';
+
                     container.innerHTML += `
                         <div class="app-card">
-                            <h3>${appData.name || 'تطبيق بدون اسم'}</h3>
-                            <p>${appData.description || 'لا يوجد وصف'}</p>
-                            <a href="${appData.downloadUrl || '#'}" class="btn" target="_blank">تحميل APK</a>
+                            <img src="${appImage}" alt="${appName}">
+                            <div class="app-info">
+                                <h3>${appName}</h3>
+                                <p>${appDesc}</p>
+                                <a href="${appLink}" class="btn" target="_blank">تحميل APK</a>
+                            </div>
                         </div>
                     `;
                 });
@@ -107,8 +224,6 @@
                 container.innerHTML = "<p>حدث خطأ أثناء الاتصال بالسيرفر.</p>";
             }
         }
-
-        loadApps();
     </script>
 
 </body>
