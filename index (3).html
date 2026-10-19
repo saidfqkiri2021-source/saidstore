@@ -45,6 +45,10 @@
             border-radius: 8px;
             text-align: center;
             font-size: 18px;
+            outline: none;
+        }
+        .lock-box input:focus {
+            border-color: #2563eb;
         }
         .lock-box button {
             background: #2563eb;
@@ -54,11 +58,15 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lock-box button:hover {
+            background: #1d4ed8;
         }
         #error-msg {
             color: red;
             font-size: 13px;
-            margin-top: 5px;
+            margin-top: 10px;
             display: none;
         }
 
@@ -73,6 +81,14 @@
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(37,99,235,0.3);
         }
+        header h1 {
+            margin: 0 0 5px 0;
+        }
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
         #apps-container {
             margin-top: 20px;
             display: flex;
@@ -82,46 +98,52 @@
         .app-card {
             background: white;
             padding: 15px;
-            margin: 15px;
+            margin: 12px 0;
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             text-align: right;
             box-sizing: border-box;
             border-right: 5px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         .app-card img {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
+            width: 75px;
+            height: 75px;
+            border-radius: 10px;
             object-fit: cover;
-            float: left;
             background: #eee;
+            flex-shrink: 0;
         }
         .app-info {
+            flex-grow: 1;
             overflow: hidden;
         }
         .app-info h3 {
             margin: 0 0 5px 0;
             color: #1f2937;
+            font-size: 16px;
         }
         .app-info p {
             margin: 0 0 10px 0;
             color: #4b5563;
-            font-size: 14px;
+            font-size: 13px;
+            line-height: 1.4;
         }
         .btn {
             background: #10b981;
             color: white;
-            padding: 8px 15px;
+            padding: 6px 14px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            font-size: 14px;
-            transition: 0.2s;
+            font-size: 13px;
+            transition: background 0.2s;
         }
         .btn:hover {
             background: #059669;
@@ -146,11 +168,11 @@
         </div>
     </div>
 
-    <!-- محتوى المتجر (لا يظهر إلا بعد إدخال الكود الصحيح) -->
+    <!-- محتوى المتجر -->
     <div id="store-content">
         <header>
             <h1>SaidStore 📱</h1>
-            <p></p></p></p></p>
+            <p>متجرك الخاص لتنزيل وتجربة التطبيقات والألعاب</p>
         </header>
 
         <main id="apps-container">
@@ -163,19 +185,28 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // دالة التحقق من كلمة المرور (الكود السري هو: 1234 - يمكنك تغييره)
+        // دالة التحقق من كلمة المرور
         window.checkPassword = function() {
             const enteredPass = document.getElementById('passcode').value;
-            const correctPass = "SAIDANTIBAN20"; // <--- الكود السري الخاص بك (غيره كيف بغيتي)
+            const correctPass = "SAIDANTIBAN20"; // الكود السري الخاص بك
 
             if (enteredPass === correctPass) {
                 document.getElementById('lock-screen').style.display = 'none';
                 document.getElementById('store-content').style.display = 'block';
-                loadApps(); // تحميل التطبيقات فقط بعد نجاح الدخول
+                loadApps(); // تحميل التطبيقات بعد نجاح الدخول
             } else {
-                document.getElementById('error-msg').style.display = 'block';
+                const errorMsg = document.getElementById('error-msg');
+                errorMsg.style.display = 'block';
+                document.getElementById('passcode').value = '';
             }
         };
+
+        // الضغط على Enter لتأكيد الباسورد
+        document.getElementById('passcode').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
 
         const firebaseConfig = {
           apiKey: "AIzaSyA9CONWJPZkD_v6Je08P58QAKidcXXwkOE",
@@ -196,7 +227,7 @@
             try {
                 const querySnapshot = await getDocs(collection(db, "apps"));
                 if (querySnapshot.empty) {
-                    container.innerHTML = "<p>لا توجد تطبيقات في السيرفر حالياً.</p>";
+                    container.innerHTML = "<p style='color: #666; margin-top: 30px;'>لا توجد تطبيقات في السيرفر حالياً.</p>";
                     return;
                 }
 
@@ -204,24 +235,25 @@
                 querySnapshot.forEach((doc) => {
                     const appData = doc.data();
                     const appName = appData.name || 'تطبيق بدون اسم';
-                    const appDesc = appData.description || 'لا يوجد وصف';
+                    const appDesc = appData.description || 'لا يوجد وصف متاح';
                     const appLink = appData.downloadUrl || '#';
                     const appImage = appData.imageUrl || 'https://via.placeholder.com/80';
 
+                    // تم إضافة onclick لإجبار الروابط (بحال ميديافاير) على الفتح في المتصفح الخارجي Chrome
                     container.innerHTML += `
                         <div class="app-card">
                             <img src="${appImage}" alt="${appName}">
                             <div class="app-info">
                                 <h3>${appName}</h3>
                                 <p>${appDesc}</p>
-                                <a href="${appLink}" class="btn" target="_blank">تحميل APK</a>
+                                <a href="${appLink}" class="btn" target="_blank" onclick="window.open('${appLink}', '_system'); return false;">تحميل APK</a>
                             </div>
                         </div>
                     `;
                 });
             } catch (error) {
                 console.error("خطأ في جلب البيانات: ", error);
-                container.innerHTML = "<p>حدث خطأ أثناء الاتصال بالسيرفر.</p>";
+                container.innerHTML = "<p style='color: red; margin-top: 30px;'>حدث خطأ أثناء الاتصال بالسيرفر.</p>";
             }
         }
     </script>
