@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAID CINEMA - أفلام سريعة التشغيل</title>
+    <title>SAID CINEMA - الأفلام الكاملة والمشغل الذكي</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #07090e; color: #f8fafc; padding: 15px; min-height: 100vh; }
+        body { background: #07090e; color: #f8fafc; padding: 15px; min-height: 100vh; padding-bottom: 50px; }
         
         header { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .logo { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
@@ -24,81 +24,192 @@
         .movie-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: space-between; }
         .movie-title { font-size: 14px; font-weight: bold; color: #fff; }
         .movie-meta { font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; }
-        .watch-btn { background: #2563eb; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; text-decoration: none; }
+        
+        .btn-group { display: flex; gap: 6px; margin-top: 5px; }
+        .watch-btn { flex: 1; background: #2563eb; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; transition: 0.2s; }
         .watch-btn:hover { background: #1d4ed8; }
+        .external-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; }
+        .external-btn:hover { background: #374151; color: #fff; }
+
+        /* Modal Player Popup */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; padding: 10px; }
+        .modal-content { background: #111827; border-radius: 16px; max-width: 600px; width: 100%; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .modal-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #1f2937; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .modal-title { font-size: 15px; font-weight: bold; color: #38bdf8; }
+        .close-modal { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+        
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+        .video-box { width: 100%; height: 100%; display: block; background: #000; }
+        
+        /* Loading Spinner Overlay */
+        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #38bdf8; gap: 10px; font-size: 13px; z-index: 10; transition: opacity 0.3s; }
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(56, 189, 248, 0.2); border-top-color: #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .player-tips { padding: 15px; font-size: 12px; color: #94a3b8; line-height: 1.5; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo"><i class="fa-solid fa-film"></i> SAID CINEMA</div>
-        <div class="date-badge">تشغيل فوري</div>
+        <div class="date-badge">26 نوفمبر 2026</div>
     </header>
 
     <div class="notice-box">
         <i class="fa-solid fa-circle-info fa-lg" style="color: #38bdf8;"></i>
-        <span>تم تحسين الروابط لتفتح في المشغل الخارجي (مثل VLC أو مشغل الهاتف الافتراضي) فوراً وبدون أي دوران أو انتظار طويل.</span>
+        <span>تم حل مشكلة التحميل بإضافة شاشة تحميل ذكية ومؤشر جاهزية. يمكنك المشاهدة داخل التطبيق أو استخدام المشغل الخارجي (VLC).</span>
     </div>
 
     <div class="section-title">
-        <span><i class="fa-solid fa-fire"></i> قائمة الأفلام والعروض</span>
+        <span><i class="fa-solid fa-fire"></i> الأفلام الكاملة الحصرية</span>
     </div>
 
-    <!-- قائمة الأفلام بروابط تشغيل مباشرة وسريعة -->
+    <!-- قائمة الأفلام -->
     <div class="movies-grid">
         
+        <!-- فيلم 1 -->
         <div class="movie-card">
             <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
             <div class="movie-info">
                 <div>
-                    <div class="movie-title">الليل الأخير (HD)</div>
-                    <div class="movie-meta"><span>دراما • كامل</span><span>⭐ 8.2</span></div>
+                    <div class="movie-title">الليل الأخير (1h 35m)</div>
+                    <div class="movie-meta"><span>دراما • كلاسيك</span><span>⭐ 8.2</span></div>
                 </div>
-                <a href="https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4" target="_blank" class="watch-btn">
-                    <i class="fa-solid fa-play"></i> تشغيل الفيلم
-                </a>
+                <div class="btn-group">
+                    <button class="watch-btn" onclick="openPlayer('https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4', 'الليل الأخير')">
+                        <i class="fa-solid fa-play"></i> مشغل داخلي
+                    </button>
+                    <a href="https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4" target="_blank" class="watch-btn external-btn">
+                        <i class="fa-solid fa-external-link-alt"></i> خارجي
+                    </a>
+                </div>
             </div>
         </div>
 
+        <!-- فيلم 2 -->
         <div class="movie-card">
             <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
             <div class="movie-info">
                 <div>
-                    <div class="movie-title">المحقق الكلاسيكي (HD)</div>
-                    <div class="movie-meta"><span>غموض • كامل</span><span>⭐ 7.9</span></div>
+                    <div class="movie-title">المحقق الكلاسيكي (1h 42m)</div>
+                    <div class="movie-meta"><span>غموض • جريمة</span><span>⭐ 7.9</span></div>
                 </div>
-                <a href="https://ia800201.us.archive.org/12/items/D.O.A.1950/D.O.A._1950_512kb.mp4" target="_blank" class="watch-btn">
-                    <i class="fa-solid fa-play"></i> تشغيل الفيلم
-                </a>
+                <div class="btn-group">
+                    <button class="watch-btn" onclick="openPlayer('https://ia800201.us.archive.org/12/items/D.O.A.1950/D.O.A._1950_512kb.mp4', 'المحقق الكلاسيكي')">
+                        <i class="fa-solid fa-play"></i> مشغل داخلي
+                    </button>
+                    <a href="https://ia800201.us.archive.org/12/items/D.O.A.1950/D.O.A._1950_512kb.mp4" target="_blank" class="watch-btn external-btn">
+                        <i class="fa-solid fa-external-link-alt"></i> خارجي
+                    </a>
+                </div>
             </div>
         </div>
 
+        <!-- فيلم 3 -->
         <div class="movie-card">
             <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
             <div class="movie-info">
                 <div>
-                    <div class="movie-title">رحلة الفضاء (Sci-Fi)</div>
+                    <div class="movie-title">رحلة الفضاء القديمة (1h 20m)</div>
                     <div class="movie-meta"><span>خيال علمي</span><span>⭐ 7.5</span></div>
                 </div>
-                <a href="https://ia800903.us.archive.org/10/items/Plan_9_from_Outer_Space_1959/Plan_9_from_Outer_Space_1959_512kb.mp4" target="_blank" class="watch-btn">
-                    <i class="fa-solid fa-play"></i> تشغيل الفيلم
-                </a>
+                <div class="btn-group">
+                    <button class="watch-btn" onclick="openPlayer('https://ia800903.us.archive.org/10/items/Plan_9_from_Outer_Space_1959/Plan_9_from_Outer_Space_1959_512kb.mp4', 'رحلة الفضاء القديمة')">
+                        <i class="fa-solid fa-play"></i> مشغل داخلي
+                    </button>
+                    <a href="https://ia800903.us.archive.org/10/items/Plan_9_from_Outer_Space_1959/Plan_9_from_Outer_Space_1959_512kb.mp4" target="_blank" class="watch-btn external-btn">
+                        <i class="fa-solid fa-external-link-alt"></i> خارجي
+                    </a>
+                </div>
             </div>
         </div>
 
+        <!-- فيلم 4 -->
         <div class="movie-card">
             <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
             <div class="movie-info">
                 <div>
-                    <div class="movie-title">مغامرة الإثارة (Action)</div>
+                    <div class="movie-title">القطار السريع والإثارة (1h 15m)</div>
                     <div class="movie-meta"><span>حركة • إثارة</span><span>⭐ 8.0</span></div>
                 </div>
-                <a href="https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4" target="_blank" class="watch-btn">
-                    <i class="fa-solid fa-play"></i> تشغيل الفيلم
-                </a>
+                <div class="btn-group">
+                    <button class="watch-btn" onclick="openPlayer('https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4', 'القطار السريع')">
+                        <i class="fa-solid fa-play"></i> مشغل داخلي
+                    </button>
+                    <a href="https://ia800300.us.archive.org/15/items/The_Night_of_the_Hunter_1955/The_Night_of_the_Hunter_1955.mp4" target="_blank" class="watch-btn external-btn">
+                        <i class="fa-solid fa-external-link-alt"></i> خارجي
+                    </a>
+                </div>
             </div>
         </div>
 
     </div>
+
+    <!-- نافذة مشغل الفيديو المنبثقة -->
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="modalTitle" class="modal-title">مشاهدة الفيلم</div>
+                <button class="close-modal" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="video-wrapper">
+                <div id="loadingOverlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <span>جاري تحميل الفيلم (قد يستغرق ثواني حسب السرعة)...</span>
+                </div>
+                <video id="modalVideo" class="video-box" controls autoplay playsinline preload="auto"></video>
+            </div>
+            <div class="player-tips">
+                💡 إذا واجهت بطئاً في تحميل الفيلم الكبير، يمكنك الضغط على زر <b>"خارجي"</b> لتشغيله مباشرة عبر مشغل الهاتف (VLC).
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('playerModal');
+        const video = document.getElementById('modalVideo');
+        const titleEl = document.getElementById('modalTitle');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        function openPlayer(url, title) {
+            titleEl.innerText = title;
+            loadingOverlay.classList.remove('hidden');
+            video.src = url;
+            modal.style.display = 'flex';
+            
+            video.play().then(() => {
+                loadingOverlay.classList.add('hidden');
+            }).catch(e => {
+                console.log("Autoplay prevented or loading:", e);
+            });
+        }
+
+        video.addEventListener('canplay', () => {
+            loadingOverlay.classList.add('hidden');
+        });
+
+        video.addEventListener('waiting', () => {
+            loadingOverlay.classList.remove('hidden');
+        });
+
+        video.addEventListener('playing', () => {
+            loadingOverlay.classList.add('hidden');
+        });
+
+        function closePlayer() {
+            video.pause();
+            video.src = "";
+            loadingOverlay.classList.remove('hidden');
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closePlayer();
+            }
+        }
+    </script>
 </body>
 </html>
