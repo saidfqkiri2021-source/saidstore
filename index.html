@@ -12,10 +12,7 @@
         
         header { background: #111827; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(34, 197, 94, 0.2); border-radius: 14px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .logo { font-size: 18px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
-        .header-actions { display: flex; align-items: center; gap: 10px; }
         .live-badge { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .refresh-btn { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #22c55e; font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
-        .refresh-btn:hover { background: rgba(34, 197, 94, 0.3); }
 
         .section-title { font-size: 15px; color: #22c55e; margin: 20px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; align-items: center; justify-content: space-between; }
         
@@ -33,7 +30,7 @@
         .close-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
         
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
-        .video-element { width: 100%; height: 100%; display: block; background: #000; }
+        .video-element { width: 100%; height: 100%; display: block; background: #000; border: none; }
         
         .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #22c55e; gap: 10px; font-size: 13px; z-index: 10; transition: opacity 0.3s; }
         .loading-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -47,24 +44,31 @@
 
     <header>
         <div class="logo"><i class="fa-solid fa-trophy"></i> SAID TV Pro</div>
-        <div class="header-actions">
-            <button class="refresh-btn" onclick="loadChannels()"><i class="fa-solid fa-rotate"></i> تحديث</button>
-            <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
-        </div>
+        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
     </header>
 
     <div class="section-title">
-        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية</span>
-    </div>
-    <div id="sportsGrid" class="channels-grid">
-        <!-- يتم تعبئتها تلقائياً -->
+        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية (مباشر)</span>
     </div>
 
-    <div class="section-title">
-        <span><i class="fa-solid fa-satellite-dish"></i> قنوات عامة وإخبارية</span>
-    </div>
-    <div id="newsGrid" class="channels-grid">
-        <!-- يتم تعبئتها تلقائياً -->
+    <div class="channels-grid">
+        <!-- مثال لقناة تعمل بنظام Embed / صفحة ويب -->
+        <div class="channel-card" onclick="playStream('https://www.youtube.com/embed/live_stream?channel=UC...찼', 'beIN Sports HD (Embed)', 'embed')">
+            <div class="channel-logo" style="color:#ef4444;"><i class="fa-solid fa-tv"></i></div>
+            <div>
+                <div class="channel-name">beIN Sports HD</div>
+                <div class="channel-qual">مشغل آمن (Embed)</div>
+            </div>
+        </div>
+
+        <!-- قناة الجزيرة الإخبارية (HLS مباشر) -->
+        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية', 'hls')">
+            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
+            <div>
+                <div class="channel-name">الجزيرة الإخبارية</div>
+                <div class="channel-qual">بث رسمي مباشر</div>
+            </div>
+        </div>
     </div>
 
     <!-- Player Modal -->
@@ -79,7 +83,9 @@
                     <div class="spinner"></div>
                     <span>جاري الاتصال بالسيرفر...</span>
                 </div>
+                <!-- مشغلان: واحد للفيديو المباشر وواحد للـ Embed -->
                 <video id="videoElement" class="video-element" controls autoplay playsinline preload="auto"></video>
+                <iframe id="iframeElement" class="video-element" allowfullscreen style="display: none;"></iframe>
             </div>
             <div class="player-info-bar">
                 ⚡ استمتع بمشاهدة البث المباشر بجودة عالية وثبات تام.
@@ -88,79 +94,14 @@
     </div>
 
     <script>
-        // بيانات افتراضية مدمجة (تعمل احتياطياً في حال انقطاع الإنترنت عن ملف JSON الخارجي)
-        const fallbackData = {
-            "sports": [
-                { "name": "beIN XTRA 2", "quality": "HD رياضي", "url": "https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8", "icon": "fa-tv", "color": "#38bdf8" },
-                { "name": "beIN Global HD", "quality": "بث عالمي", "url": "https://k100streymi.mbl.is/beint/k100/index.m3u8", "icon": "fa-globe", "color": "#eab308" }
-            ],
-            "news": [
-                { "name": "الجزيرة الإخبارية", "quality": "بث مباشر", "url": "https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8", "icon": "fa-newspaper", "color": "#22c55e" }
-            ]
-        };
-
-        function renderChannels(data) {
-            const sportsGrid = document.getElementById('sportsGrid');
-            const newsGrid = document.getElementById('newsGrid');
-            
-            sportsGrid.innerHTML = '';
-            newsGrid.innerHTML = '';
-
-            // تعبئة الرياضية
-            data.sports.forEach(ch => {
-                sportsGrid.innerHTML += `
-                    <div class="channel-card" onclick="playStream('${ch.url}', '${ch.name}')">
-                        <div class="channel-logo" style="color:${ch.color};"><i class="fa-solid ${ch.icon}"></i></div>
-                        <div>
-                            <div class="channel-name">${ch.name}</div>
-                            <div class="channel-qual">${ch.quality}</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // تعبئة الإخبارية
-            data.news.forEach(ch => {
-                newsGrid.innerHTML += `
-                    <div class="channel-card" onclick="playStream('${ch.url}', '${ch.name}')">
-                        <div class="channel-logo" style="color:${ch.color};"><i class="fa-solid ${ch.icon}"></i></div>
-                        <div>
-                            <div class="channel-name">${ch.name}</div>
-                            <div class="channel-qual">${ch.quality}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function loadChannels() {
-            // استبدل الرابط أدناه برابط ملف JSON الخاص بك على GitHub Gist أو أي استضافة
-            const jsonUrl = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/channels.json';
-
-            fetch(jsonUrl)
-                .then(res => res.json())
-                .then(data => {
-                    renderChannels(data);
-                })
-                .catch(err => {
-                    console.log("Using local fallback channels:", err);
-                    renderChannels(fallbackData);
-                });
-        }
-
-        // تشغيل التحميل عند فتح الصفحة
-        window.onload = () => {
-            loadChannels();
-        };
-
-        // إعدادات المشغل (HLS)
         const modal = document.getElementById('playerModal');
         const video = document.getElementById('videoElement');
+        const iframe = document.getElementById('iframeElement');
         const titleEl = document.getElementById('modalTitle');
         const loadingOverlay = document.getElementById('loadingOverlay');
         let hls = null;
 
-        function playStream(url, title) {
+        function playStream(url, title, type) {
             titleEl.innerText = title;
             loadingOverlay.classList.remove('hidden');
             modal.style.display = 'flex';
@@ -170,31 +111,31 @@
                 hls = null;
             }
 
-            if (Hls.isSupported() && url.includes('.m3u8')) {
-                hls = new Hls({
-                    xhrSetup: function(xhr, url) {
-                        xhr.withCredentials = false;
-                    }
-                });
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            if (type === 'embed') {
+                video.style.display = 'none';
+                iframe.style.display = 'block';
+                iframe.src = url;
+                setTimeout(() => loadingOverlay.classList.add('hidden'), 1000);
+            } else {
+                iframe.style.display = 'none';
+                video.style.display = 'block';
+                iframe.src = '';
+
+                if (Hls.isSupported() && url.includes('.m3u8')) {
+                    hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play().then(() => {
+                            loadingOverlay.classList.add('hidden');
+                        }).catch(e => console.log("Autoplay:", e));
+                    });
+                } else {
+                    video.src = url;
                     video.play().then(() => {
                         loadingOverlay.classList.add('hidden');
-                    }).catch(e => console.log("Autoplay:", e));
-                });
-                hls.on(Hls.Events.ERROR, function(event, data) {
-                    if (data.fatal) {
-                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                            hls.startLoad();
-                        }
-                    }
-                });
-            } else {
-                video.src = url;
-                video.play().then(() => {
-                    loadingOverlay.classList.add('hidden');
-                }).catch(e => console.log("Direct play:", e));
+                    }).catch(e => console.log("Direct play:", e));
+                }
             }
         }
 
@@ -209,6 +150,7 @@
         function closePlayer() {
             video.pause();
             video.src = "";
+            iframe.src = "";
             if (hls) {
                 hls.destroy();
                 hls = null;
