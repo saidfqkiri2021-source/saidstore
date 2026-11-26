@@ -12,15 +12,20 @@
         
         header { background: #111827; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(34, 197, 94, 0.2); border-radius: 14px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .logo { font-size: 18px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
         .live-badge { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        
+        .playlist-bar { background: #111827; padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.08); display: flex; gap: 8px; }
+        .playlist-input { flex: 1; background: #1f2937; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
+        .playlist-btn { background: #22c55e; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-        .section-title { font-size: 15px; color: #22c55e; margin: 20px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-size: 15px; color: #22c55e; margin: 20px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; }
         
         .channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .channel-card { background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; text-align: right; }
         .channel-card:hover { border-color: #22c55e; background: #1f2937; transform: translateY(-2px); }
-        .channel-logo { width: 42px; height: 42px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .channel-name { font-size: 13px; font-weight: bold; color: #fff; }
+        .channel-logo { width: 42px; height: 42px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #22c55e; }
+        .channel-name { font-size: 13px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .channel-qual { font-size: 10px; color: #38bdf8; margin-top: 2px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; padding: 10px; }
@@ -30,7 +35,7 @@
         .close-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
         
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
-        .video-element { width: 100%; height: 100%; display: block; background: #000; border: none; }
+        .video-element { width: 100%; height: 100%; display: block; background: #000; }
         
         .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #22c55e; gap: 10px; font-size: 13px; z-index: 10; transition: opacity 0.3s; }
         .loading-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -47,28 +52,18 @@
         <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
     </header>
 
-    <div class="section-title">
-        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية</span>
+    <!-- شريط إدخال رابط الـ M3U -->
+    <div class="playlist-bar">
+        <input type="text" id="m3uUrlInput" class="playlist-input" placeholder="ألصق رابط M3U هنا (مثل الباقة 1)..." value="https://raw.githubusercontent.com/mesbahikarim10-source/hot-dodo/main/FIW_1795523606_1_c0ca89_Hunter_1811.m3u">
+        <button class="playlist-btn" onclick="loadM3UPlaylist()"><i class="fa-solid fa-download"></i> تحميل الباقة</button>
     </div>
 
-    <div class="channels-grid">
-        <!-- beIN Sports Xtra 2 -->
-        <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2', 'hls')">
-            <div class="channel-logo" style="color:#38bdf8;"><i class="fa-solid fa-tv"></i></div>
-            <div>
-                <div class="channel-name">beIN XTRA 2</div>
-                <div class="channel-qual">بث رياضي HD</div>
-            </div>
-        </div>
+    <div class="section-title">
+        <span><i class="fa-solid fa-futbol"></i> القنوات المستخرجة من الباقة</span>
+    </div>
 
-        <!-- الجزيرة الإخبارية -->
-        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية', 'hls')">
-            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
-            <div>
-                <div class="channel-name">الجزيرة الإخبارية</div>
-                <div class="channel-qual">بث رسمي مباشر</div>
-            </div>
-        </div>
+    <div id="channelsGrid" class="channels-grid">
+        <!-- يتم تعبئة القنوات تلقائياً عند تحميل الرابط -->
     </div>
 
     <!-- Player Modal -->
@@ -84,7 +79,6 @@
                     <span>جاري الاتصال بالسيرفر...</span>
                 </div>
                 <video id="videoElement" class="video-element" controls autoplay playsinline preload="auto"></video>
-                <iframe id="iframeElement" class="video-element" allowfullscreen style="display: none;"></iframe>
             </div>
             <div class="player-info-bar">
                 ⚡ استمتع بمشاهدة البث المباشر بجودة عالية وثبات تام.
@@ -93,14 +87,98 @@
     </div>
 
     <script>
+        // دالة لتحليل ملفات M3U وعرض القنوات
+        async function loadM3UPlaylist() {
+            let url = document.getElementById('m3uUrlInput').value.trim();
+            if (!url) return;
+
+            const grid = document.getElementById('channelsGrid');
+            grid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding: 20px; color:#22c55e;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل وتحليل القنوات...</div>';
+
+            try {
+                // استخدام CORS Proxy لتجاوز قيود المتصفح عند جلب الروابط الخارجية
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+                const response = await fetch(proxyUrl);
+                const text = await response.text();
+
+                parseM3U(text);
+            } catch (err) {
+                console.error(err);
+                // محاولة الجلب المباشر في حال فشل البروكسي
+                try {
+                    const response = await fetch(url);
+                    const text = await response.text();
+                    parseM3U(text);
+                } catch (e) {
+                    grid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding: 20px; color:#ef4444;">فشل جلب الملف. تأكد من صلاحية الرابط أو جرب رابطاً آخر.</div>';
+                }
+            }
+        }
+
+        function parseM3U(data) {
+            const lines = data.split('\n');
+            const channels = [];
+            let currentChannel = {};
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#EXTINF:')) {
+                    // استخراج اسم القناة
+                    let nameMatch = line.match(/,(.+)$/);
+                    currentChannel.name = nameMatch ? nameMatch.target || nameMatch[1] : 'قناة غير محددة';
+                } else if (line && !line.startsWith('#')) {
+                    // هذا هو رابط البث المباشر
+                    currentChannel.url = line;
+                    if (currentChannel.name && currentChannel.url) {
+                        channels.push({ ...currentChannel });
+                    }
+                    currentChannel = {};
+                }
+            }
+
+            renderChannels(channels);
+        }
+
+        function renderChannels(channels) {
+            const grid = document.getElementById('channelsGrid');
+            grid.innerHTML = '';
+
+            if (channels.length === 0) {
+                grid.innerHTML = '<div style="grid-column: span 2; text-align:center; padding: 20px; color:#ef4444;">لم يتم العثور على قنوات في هذا الملف.</div>';
+                return;
+            }
+
+            // عرض أول 50 قناة فقط لتخفيف الحمل على الصفحة
+            channels.slice(0, 50).forEach(ch => {
+                grid.innerHTML += `
+                    <div class="channel-card" onclick="playStream('${ch.url}', '${escapeHtml(ch.name)}')">
+                        <div class="channel-logo"><i class="fa-solid fa-tv"></i></div>
+                        <div>
+                            <div class="channel-name">${escapeHtml(ch.name)}</div>
+                            <div class="channel-qual">بث مباشر HD</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        // تحميل الباقة الأولى تلقائياً عند فتح الصفحة
+        window.onload = () => {
+            loadM3UPlaylist();
+        };
+
+        // إعدادات المشغل (HLS)
         const modal = document.getElementById('playerModal');
         const video = document.getElementById('videoElement');
-        const iframe = document.getElementById('iframeElement');
         const titleEl = document.getElementById('modalTitle');
         const loadingOverlay = document.getElementById('loadingOverlay');
         let hls = null;
 
-        function playStream(url, title, type) {
+        function playStream(url, title) {
             titleEl.innerText = title;
             loadingOverlay.classList.remove('hidden');
             modal.style.display = 'flex';
@@ -110,40 +188,29 @@
                 hls = null;
             }
 
-            if (type === 'embed') {
-                video.style.display = 'none';
-                iframe.style.display = 'block';
-                iframe.src = url;
-                setTimeout(() => loadingOverlay.classList.add('hidden'), 800);
-            } else {
-                iframe.style.display = 'none';
-                video.style.display = 'block';
-                iframe.src = '';
-
-                if (Hls.isSupported() && url.includes('.m3u8')) {
-                    hls = new Hls({
-                        xhrSetup: function(xhr, url) {
-                            xhr.withCredentials = false;
-                        }
-                    });
-                    hls.loadSource(url);
-                    hls.attachMedia(video);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        video.play().then(() => {
-                            loadingOverlay.classList.add('hidden');
-                        }).catch(e => console.log("Autoplay:", e));
-                    });
-                    hls.on(Hls.Events.ERROR, function(event, data) {
-                        if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                            hls.startLoad();
-                        }
-                    });
-                } else {
-                    video.src = url;
+            if (Hls.isSupported() && (url.includes('.m3u8') || url.includes('.ts') || true)) {
+                hls = new Hls({
+                    xhrSetup: function(xhr, url) {
+                        xhr.withCredentials = false;
+                    }
+                });
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     video.play().then(() => {
                         loadingOverlay.classList.add('hidden');
-                    }).catch(e => console.log("Direct play:", e));
-                }
+                    }).catch(e => console.log("Autoplay:", e));
+                });
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                        hls.startLoad();
+                    }
+                });
+            } else {
+                video.src = url;
+                video.play().then(() => {
+                    loadingOverlay.classList.add('hidden');
+                }).catch(e => console.log("Direct play:", e));
             }
         }
 
@@ -158,7 +225,6 @@
         function closePlayer() {
             video.pause();
             video.src = "";
-            iframe.src = "";
             if (hls) {
                 hls.destroy();
                 hls = null;
