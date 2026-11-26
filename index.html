@@ -12,14 +12,17 @@
         
         header { background: #111827; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(34, 197, 94, 0.2); border-radius: 14px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .logo { font-size: 18px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
         .live-badge { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .refresh-btn { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #22c55e; font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .refresh-btn:hover { background: rgba(34, 197, 94, 0.3); }
 
         .section-title { font-size: 15px; color: #22c55e; margin: 20px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; align-items: center; justify-content: space-between; }
         
         .channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .channel-card { background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; text-align: right; }
         .channel-card:hover { border-color: #22c55e; background: #1f2937; transform: translateY(-2px); }
-        .channel-logo { width: 42px; height: 42px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 18px; flex-shrink: 0; }
+        .channel-logo { width: 42px; height: 42px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
         .channel-name { font-size: 13px; font-weight: bold; color: #fff; }
         .channel-qual { font-size: 10px; color: #38bdf8; margin-top: 2px; }
 
@@ -44,46 +47,24 @@
 
     <header>
         <div class="logo"><i class="fa-solid fa-trophy"></i> SAID TV Pro</div>
-        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
+        <div class="header-actions">
+            <button class="refresh-btn" onclick="loadChannels()"><i class="fa-solid fa-rotate"></i> تحديث</button>
+            <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
+        </div>
     </header>
 
     <div class="section-title">
         <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية</span>
     </div>
-
-    <div class="channels-grid">
-        <!-- beIN Sports Xtra 2 -->
-        <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2')">
-            <div class="channel-logo" style="color:#38bdf8;"><i class="fa-solid fa-tv"></i></div>
-            <div>
-                <div class="channel-name">beIN XTRA 2</div>
-                <div class="channel-qual">بث رياضي HD</div>
-            </div>
-        </div>
-
-        <!-- beIN Global HD -->
-        <div class="channel-card" onclick="playStream('https://k100streymi.mbl.is/beint/k100/index.m3u8', 'beIN Sports Global HD')">
-            <div class="channel-logo" style="color:#eab308;"><i class="fa-solid fa-globe"></i></div>
-            <div>
-                <div class="channel-name">beIN Global HD</div>
-                <div class="channel-qual">بث عالمي</div>
-            </div>
-        </div>
+    <div id="sportsGrid" class="channels-grid">
+        <!-- يتم تعبئتها تلقائياً -->
     </div>
 
     <div class="section-title">
         <span><i class="fa-solid fa-satellite-dish"></i> قنوات عامة وإخبارية</span>
     </div>
-
-    <div class="channels-grid">
-        <!-- الجزيرة الإخبارية -->
-        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية')">
-            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
-            <div>
-                <div class="channel-name">الجزيرة الإخبارية</div>
-                <div class="channel-qual">بث رسمي مباشر</div>
-            </div>
-        </div>
+    <div id="newsGrid" class="channels-grid">
+        <!-- يتم تعبئتها تلقائياً -->
     </div>
 
     <!-- Player Modal -->
@@ -107,6 +88,72 @@
     </div>
 
     <script>
+        // بيانات افتراضية مدمجة (تعمل احتياطياً في حال انقطاع الإنترنت عن ملف JSON الخارجي)
+        const fallbackData = {
+            "sports": [
+                { "name": "beIN XTRA 2", "quality": "HD رياضي", "url": "https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8", "icon": "fa-tv", "color": "#38bdf8" },
+                { "name": "beIN Global HD", "quality": "بث عالمي", "url": "https://k100streymi.mbl.is/beint/k100/index.m3u8", "icon": "fa-globe", "color": "#eab308" }
+            ],
+            "news": [
+                { "name": "الجزيرة الإخبارية", "quality": "بث مباشر", "url": "https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8", "icon": "fa-newspaper", "color": "#22c55e" }
+            ]
+        };
+
+        function renderChannels(data) {
+            const sportsGrid = document.getElementById('sportsGrid');
+            const newsGrid = document.getElementById('newsGrid');
+            
+            sportsGrid.innerHTML = '';
+            newsGrid.innerHTML = '';
+
+            // تعبئة الرياضية
+            data.sports.forEach(ch => {
+                sportsGrid.innerHTML += `
+                    <div class="channel-card" onclick="playStream('${ch.url}', '${ch.name}')">
+                        <div class="channel-logo" style="color:${ch.color};"><i class="fa-solid ${ch.icon}"></i></div>
+                        <div>
+                            <div class="channel-name">${ch.name}</div>
+                            <div class="channel-qual">${ch.quality}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // تعبئة الإخبارية
+            data.news.forEach(ch => {
+                newsGrid.innerHTML += `
+                    <div class="channel-card" onclick="playStream('${ch.url}', '${ch.name}')">
+                        <div class="channel-logo" style="color:${ch.color};"><i class="fa-solid ${ch.icon}"></i></div>
+                        <div>
+                            <div class="channel-name">${ch.name}</div>
+                            <div class="channel-qual">${ch.quality}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadChannels() {
+            // استبدل الرابط أدناه برابط ملف JSON الخاص بك على GitHub Gist أو أي استضافة
+            const jsonUrl = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/channels.json';
+
+            fetch(jsonUrl)
+                .then(res => res.json())
+                .then(data => {
+                    renderChannels(data);
+                })
+                .catch(err => {
+                    console.log("Using local fallback channels:", err);
+                    renderChannels(fallbackData);
+                });
+        }
+
+        // تشغيل التحميل عند فتح الصفحة
+        window.onload = () => {
+            loadChannels();
+        };
+
+        // إعدادات المشغل (HLS)
         const modal = document.getElementById('playerModal');
         const video = document.getElementById('videoElement');
         const titleEl = document.getElementById('modalTitle');
