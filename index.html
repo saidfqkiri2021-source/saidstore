@@ -3,136 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIDANTIBAN LIVE - مباريات اليوم</title>
+    <title>SAIDANTIBAN TV - البث الحي والرياضة</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background: #0b0f19; color: #f8fafc; padding: 15px; min-height: 100vh; }
-        header { background: #1e293b; padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #07090e; color: #f8fafc; padding: 15px; min-height: 100vh; }
+        
+        header { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .logo { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-        .live-badge { background: #ef4444; color: white; font-size: 11px; padding: 3px 8px; border-radius: 20px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .date-badge { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
 
         .notice-box { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 12px; border-radius: 12px; font-size: 13px; color: #38bdf8; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         
         .section-title { font-size: 16px; color: #38bdf8; margin: 20px 0 12px 0; font-weight: bold; border-right: 4px solid #38bdf8; padding-right: 8px; display: flex; justify-content: space-between; align-items: center; }
         
-        .match-card { background: #1e293b; border-radius: 14px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .match-card { background: #111827; border-radius: 14px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .match-info { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 12px; }
         .match-teams { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
         .team { display: flex; align-items: center; gap: 8px; flex: 1; }
         .team.away { justify-content: flex-end; text-align: left; }
-        .score { background: #0f172a; padding: 6px 14px; border-radius: 8px; color: #38bdf8; font-size: 16px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .score { background: #07090e; padding: 6px 14px; border-radius: 8px; color: #38bdf8; font-size: 16px; border: 1px solid rgba(56, 189, 248, 0.3); }
 
         .servers-title { font-size: 13px; color: #cbd5e1; margin-bottom: 8px; font-weight: bold; }
         .servers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .server-btn { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; text-align: center; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
-        .server-btn:hover { background: #334155; border-color: #38bdf8; color: #fff; }
+        .server-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; text-align: center; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
+        .server-btn:hover { background: #374151; border-color: #38bdf8; color: #fff; }
 
         /* Modal Popup */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #1e293b; padding: 25px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content { background: #111827; padding: 25px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .modal-content h3 { color: #38bdf8; margin-bottom: 12px; font-size: 18px; }
         .modal-content p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
-        .modal-btns { display: flex; gap: 10px; }
-        .modal-btn { flex: 1; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
-        .btn-download { background: #2563eb; color: white; }
-        .btn-cancel { background: #334155; color: #cbd5e1; }
+        .modal-btn { width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; border: none; background: #2563eb; color: white; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-futbol"></i> SAIDANTIBAN LIVE</div>
-        <div class="live-badge">مباشر</div>
+        <div class="logo"><i class="fa-solid fa-futbol"></i> SAIDANTIBAN TV</div>
+        <div class="date-badge">26 نوفمبر 2026</div>
     </header>
 
     <div class="notice-box">
         <i class="fa-solid fa-circle-info fa-lg"></i>
-        <span>للمشاهدة بدون تقطيع وبأعلى جودة، يُرجى تثبيت مشغل الفيديوهات الخارجي (مثل VLC أو Wuffy) من متجر جوجل بلاي.</span>
+        <span>للمشاهدة بدون تقطيع وبأعلى جودة، تأكد من تثبيت مشغل الفيديوهات الخارجي (مثل <b>VLC</b> أو <b>Wuffy Player</b>) على هاتفك أولاً.</span>
     </div>
 
     <div class="section-title">
-        <span><i class="fa-solid fa-fire"></i> مباريات اليوم الكبرى</span>
+        <span><i class="fa-solid fa-fire"></i> مباريات اليوم الكبرى (26 نوفمبر 2026)</span>
     </div>
 
     <!-- مباراة 1 -->
     <div class="match-card">
         <div class="match-info">
             <span>دوري أبطال أوروبا • الجولة 5</span>
-            <span style="color: #ef4444; font-weight: bold;">جارية الآن 75'</span>
+            <span style="color: #ef4444; font-weight: bold;"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> مباشر الآن</span>
         </div>
         <div class="match-teams">
-            <div class="team">ريال مدريد</div>
-            <div class="score">2 - 1</div>
-            <div class="team away">مانشستر سيتي</div>
+            <div class="team">بايرن ميونخ</div>
+            <div class="score">1 - 0</div>
+            <div class="team away">باريس سان جيرمان</div>
         </div>
         <div class="servers-title">اختر سيرفر البث (يطلب المشغل):</div>
         <div class="servers-grid">
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match1/index.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match1/sd.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match1/low.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
+            <a href="https://www.yalla-shoot.io/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
+            <a href="https://www.koora-live.com/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
+            <a href="https://www.kora-star.tv/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
         </div>
     </div>
 
     <!-- مباراة 2 -->
     <div class="match-card">
         <div class="match-info">
-            <span>الدوري الإنجليزي الممتاز</span>
-            <span style="color: #38bdf8;">اليوم 23:00</span>
+            <span>دوري أبطال أوروبا • الجولة 5</span>
+            <span style="color: #ef4444; font-weight: bold;"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> مباشر الآن</span>
         </div>
         <div class="match-teams">
-            <div class="team">ليفربول</div>
-            <div class="score">vs</div>
-            <div class="team away">آرسنال</div>
+            <div class="team">إنتر ميلان</div>
+            <div class="score">2 - 1</div>
+            <div class="team away">أتلتيكو مدريد</div>
         </div>
         <div class="servers-title">اختر سيرفر البث (يطلب المشغل):</div>
         <div class="servers-grid">
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match2/index.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match2/sd.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match2/low.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
+            <a href="https://www.yalla-shoot.io/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
+            <a href="https://www.koora-live.com/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
+            <a href="https://www.kora-star.tv/" target="_blank" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
         </div>
     </div>
 
     <!-- مباراة 3 -->
     <div class="match-card">
         <div class="match-info">
-            <span>الدوري الإسباني</span>
-            <span style="color: #38bdf8;">اليوم 21:00</span>
+            <span>دوري أبطال أوروبا • الجولة 5</span>
+            <span style="color: #38bdf8;">اليوم 23:00</span>
         </div>
         <div class="match-teams">
-            <div class="team">برشلونة</div>
+            <div class="team">ليفربول</div>
             <div class="score">vs</div>
-            <div class="team away">اتلتيكو مدريد</div>
+            <div class="team away">ريال مدريد</div>
         </div>
         <div class="servers-title">اختر سيرفر البث (يطلب المشغل):</div>
         <div class="servers-grid">
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match3/index.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match3/sd.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
-            <a href="#" onclick="openStream('https://www.example-sports-stream.com/match3/low.m3u8')" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
+            <a href="#" onclick="showPlayerAlert(); return false;" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 1 (HD)</a>
+            <a href="#" onclick="showPlayerAlert(); return false;" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 2 (SD)</a>
+            <a href="#" onclick="showPlayerAlert(); return false;" class="server-btn"><i class="fa-solid fa-play"></i> سيرفر 3 (Low)</a>
         </div>
     </div>
 
-    <!-- نافذة تثبيت المشغل (Modal) -->
+    <!-- نافذة تنبيه تثبيت المشغل -->
     <div id="playerModal" class="modal">
         <div class="modal-content">
             <h3><i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> يلزم تثبيت مشغل المباريات</h3>
-            <p>لكي تعمل روابط البث الخارجي للمباريات بدون أخطاء، يجب تثبيت مشغل الفيديوهات (مثل VLC for Android أو Wuffy Player) من متجر جوجل بلاي أولاً.</p>
-            <div class="modal-btns">
-                <a href="https://play.google.com/store/apps/details?id=org.videolan.vlc" target="_blank" class="modal-btn btn-download">تثبيت المشغل الآن</a>
-                <button onclick="closeModal()" class="modal-btn btn-cancel">إغلاق</button>
-            </div>
+            <p>لكي تعمل روابط البث الخارجي للمباريات بدون أخطاء، تأكد من تثبيت مشغل الفيديوهات (مثل <b>VLC for Android</b> أو <b>Wuffy Player</b>) على هاتفك أولاً.</p>
+            <button onclick="closeModal()" class="modal-btn">حسناً فهمت</button>
         </div>
     </div>
 
     <script>
-        function openStream(streamUrl) {
+        function showPlayerAlert() {
             document.getElementById('playerModal').style.display = 'flex';
-            setTimeout(() => {
-                window.location.href = streamUrl;
-            }, 1000);
         }
-
         function closeModal() {
             document.getElementById('playerModal').style.display = 'none';
         }
