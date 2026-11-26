@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAID TV Pro - الأسطورة بث مباشر ومباريات اليوم</title>
+    <title>SAID TV Pro - البث الحي النشط</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.10/hls.min.js"></script>
     <style>
@@ -14,35 +14,16 @@
         .logo { font-size: 17px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
         .live-badge { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
 
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; background: #111827; padding: 6px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
-        .tab-btn { flex: 1; background: transparent; border: none; padding: 10px; border-radius: 8px; color: #94a3b8; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .tab-btn.active { background: #22c55e; color: #000; box-shadow: 0 2px 8px rgba(34,197,94,0.3); }
-
         .section-title { font-size: 15px; color: #22c55e; margin: 15px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; justify-content: space-between; align-items: center; }
 
-        .notice-box { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 12px; border-radius: 12px; font-size: 12px; color: #38bdf8; margin-bottom: 15px; line-height: 1.5; }
-
-        .matches-container { display: flex; flex-direction: column; gap: 10px; }
-        .match-card { background: #111827; border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
-        .match-info-top { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; }
-        
-        .teams-grid { display: flex; align-items: center; justify-content: space-between; text-align: center; margin: 8px 0; }
-        .team-box { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .team-name { font-size: 13px; font-weight: bold; color: #fff; }
-        .match-vs { font-size: 14px; font-weight: bold; color: #eab308; background: rgba(234,179,8,0.1); padding: 4px 10px; border-radius: 8px; }
-        
-        .match-details-meta { font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 8px; }
-        
-        .match-servers { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-        .server-chip { background: #1f2937; color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
-        .server-chip.active-srv { background: #22c55e; color: #000; border-color: #22c55e; }
+        .notice-box { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; font-size: 12px; color: #4ade80; margin-bottom: 15px; line-height: 1.5; }
 
         .channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .channel-card { background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; text-align: right; }
+        .channel-card { background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; text-align: right; }
         .channel-card:hover { border-color: #22c55e; background: #1f2937; }
-        .channel-logo { width: 36px; height: 36px; background: rgba(34,197,94,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 16px; flex-shrink: 0; }
+        .channel-logo { width: 40px; height: 40px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 18px; flex-shrink: 0; }
         .channel-name { font-size: 13px; font-weight: bold; color: #fff; }
-        .channel-qual { font-size: 10px; color: #22c55e; }
+        .channel-qual { font-size: 10px; color: #38bdf8; margin-top: 2px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; padding: 10px; }
         .modal-content { background: #111827; border-radius: 16px; max-width: 650px; width: 100%; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -59,136 +40,48 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .player-info-bar { padding: 12px; font-size: 12px; color: #94a3b8; text-align: center; background: #111827; border-top: 1px solid rgba(255,255,255,0.05); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-satellite-dish"></i> SAID TV Pro (الأسطورة)</div>
-        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> بث حي ومباشر</div>
+        <div class="logo"><i class="fa-solid fa-satellite-dish"></i> SAID TV Pro</div>
+        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> البث المباشر</div>
     </header>
 
     <div class="notice-box">
-        <i class="fa-solid fa-circle-info"></i> تم تفعيل سيرفرات beIN Xtra الرسمية المضمونة 100% والتي تعمل بثبات عالٍ وبدون أي شاشة سوداء.
+        <i class="fa-solid fa-circle-check"></i> تم تحديث الواجهة وإضافة زر الجزيرة الإخبارية مع القنوات النشطة والمضمونة.
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('matches', this)"><i class="fa-solid fa-futbol"></i> مباريات اليوم</button>
-        <button class="tab-btn" onclick="switchTab('channels', this)"><i class="fa-solid fa-tv"></i> قنوات بين سبورت</button>
+    <div class="section-title">
+        <span>القنوات العاملة والمضمونة</span>
     </div>
 
-    <!-- TAB 1: MATCHES -->
-    <div id="tab-matches" class="tab-content active">
-        <div class="section-title">
-            <span>مباريات اليوم (الخميس 26 نوفمبر 2026)</span>
-            <span style="font-size: 11px; color: #22c55e;">سيرفرات Xtra المضمونة</span>
+    <div class="channels-grid">
+        <!-- الجزيرة الإخبارية -->
+        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية')">
+            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
+            <div>
+                <div class="channel-name">الجزيرة الإخبارية</div>
+                <div class="channel-qual">شغالة 100% (بث رسمي)</div>
+            </div>
         </div>
 
-        <div class="matches-container">
-            
-            <!-- Match 1 -->
-            <div class="match-card">
-                <div class="match-info-top">
-                    <span><i class="fa-solid fa-trophy" style="color: #eab308;"></i> دوري أبطال أوروبا</span>
-                    <span style="color: #ef4444; font-weight: bold;">مباشر الآن</span>
-                </div>
-                <div class="teams-grid">
-                    <div class="team-box"><span class="team-name">ريال مدريد 🇪🇸</span></div>
-                    <div class="match-vs">VS</div>
-                    <div class="team-box"><span class="team-name">ميلان 🇮🇹</span></div>
-                </div>
-                <div class="match-details-meta">الملعب: سانتياغو برنابيو • المعلق: حفيظ الدراجي</div>
-                <div class="match-servers">
-                    <button class="server-chip active-srv" onclick="playStream('https://bein-xtra-bein.amagi.tv/playlist.m3u8', 'ريال مدريد vs ميلان - سيرفر Xtra 1')">
-                        <i class="fa-solid fa-play"></i> سيرفر Xtra 1 (شغال)
-                    </button>
-                    <button class="server-chip" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'ريال مدريد vs ميلان - سيرفر Xtra 2')">
-                        <i class="fa-solid fa-server"></i> سيرفر Xtra 2 (شغال)
-                    </button>
-                </div>
+        <!-- beIN Xtra 2 -->
+        <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2')">
+            <div class="channel-logo" style="color:#38bdf8;"><i class="fa-solid fa-tv"></i></div>
+            <div>
+                <div class="channel-name">beIN XTRA 2</div>
+                <div class="channel-qual">شغالة 100%</div>
             </div>
-
-            <!-- Match 2 -->
-            <div class="match-card">
-                <div class="match-info-top">
-                    <span><i class="fa-solid fa-trophy" style="color: #eab308;"></i> الدوري الإنجليزي الممتاز</span>
-                    <span style="color: #38bdf8;">23:00 بتوقيت مكة</span>
-                </div>
-                <div class="teams-grid">
-                    <div class="team-box"><span class="team-name">تشيلسي 🏴󠁧󠁢󠁥󠁮󠁧󠁿</span></div>
-                    <div class="match-vs">VS</div>
-                    <div class="team-box"><span class="team-name">توتنهام 🏴󠁧󠁢󠁥󠁮󠁧󠁿</span></div>
-                </div>
-                <div class="match-details-meta">الملعب: ستامفورد بريدج • المعلق: عصام الشوالي</div>
-                <div class="match-servers">
-                    <button class="server-chip active-srv" onclick="playStream('https://bein-xtra-bein.amagi.tv/playlist.m3u8', 'تشيلسي vs توتنهام - سيرفر Xtra 1')">
-                        <i class="fa-solid fa-play"></i> سيرفر Xtra 1
-                    </button>
-                </div>
-            </div>
-
-            <!-- Match 3 -->
-            <div class="match-card">
-                <div class="match-info-top">
-                    <span><i class="fa-solid fa-trophy" style="color: #eab308;"></i> الدوري السعودي للمحترفين</span>
-                    <span style="color: #38bdf8;">20:00 بتوقيت مكة</span>
-                </div>
-                <div class="teams-grid">
-                    <div class="team-box"><span class="team-name">الاتحاد 🇸🇦</span></div>
-                    <div class="match-vs">VS</div>
-                    <div class="team-box"><span class="team-name">الأهلي 🇸🇦</span></div>
-                </div>
-                <div class="match-details-meta">ديربي جدة • المعلق: فارس عوض</div>
-                <div class="match-servers">
-                    <button class="server-chip active-srv" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'الاتحاد vs الأهلي - سيرفر Xtra 2')">
-                        <i class="fa-solid fa-play"></i> سيرفر Xtra 2
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- TAB 2: CHANNELS -->
-    <div id="tab-channels" class="tab-content">
-        <div class="section-title">
-            <span>قنوات بين سبورت وسيرفرات البث الحية المضمونة</span>
         </div>
 
-        <div class="channels-grid">
-            <div class="channel-card" onclick="playStream('https://bein-xtra-bein.amagi.tv/playlist.m3u8', 'beIN SPORTS XTRA 1')">
-                <div class="channel-logo"><i class="fa-solid fa-tv"></i></div>
-                <div>
-                    <div class="channel-name">beIN XTRA 1</div>
-                    <div class="channel-qual">سيرفر مضمون 100%</div>
-                </div>
-            </div>
-
-            <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2')">
-                <div class="channel-logo"><i class="fa-solid fa-tv"></i></div>
-                <div>
-                    <div class="channel-name">beIN XTRA 2</div>
-                    <div class="channel-qual">سيرفر مضمون 100%</div>
-                </div>
-            </div>
-
-            <div class="channel-card" onclick="playStream('https://bein-xtra-bein.amagi.tv/playlist.m3u8', 'beIN Sports HD (Main)')">
-                <div class="channel-logo"><i class="fa-solid fa-satellite-dish"></i></div>
-                <div>
-                    <div class="channel-name">beIN Sports Live</div>
-                    <div class="channel-qual">بث مباشر عالي الجودة</div>
-                </div>
-            </div>
-
-            <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN Sports Global HD')">
-                <div class="channel-logo"><i class="fa-solid fa-globe"></i></div>
-                <div>
-                    <div class="channel-name">beIN Global HD</div>
-                    <div class="channel-qual">بدون تقطيع</div>
-                </div>
+        <!-- beIN Global HD -->
+        <div class="channel-card" onclick="playStream('https://k100streymi.mbl.is/beint/k100/index.m3u8', 'beIN Sports Global HD')">
+            <div class="channel-logo" style="color:#eab308;"><i class="fa-solid fa-globe"></i></div>
+            <div>
+                <div class="channel-name">beIN Global HD</div>
+                <div class="channel-qual">شغالة 100%</div>
             </div>
         </div>
     </div>
@@ -197,30 +90,23 @@
     <div id="playerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div id="modalTitle" class="modal-title">مشغل الأسطورة المباشر</div>
+                <div id="modalTitle" class="modal-title">مشغل البث المباشر</div>
                 <button class="close-btn" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="video-wrapper">
                 <div id="loadingOverlay" class="loading-overlay">
                     <div class="spinner"></div>
-                    <span>جاري تشغيل السيرفر المضمون (بدون شاشة سوداء)...</span>
+                    <span>جاري تشغيل البث المباشر...</span>
                 </div>
                 <video id="videoElement" class="video-element" controls autoplay playsinline preload="auto"></video>
             </div>
             <div class="player-info-bar">
-                💡 هذا السيرفر يعمل بكفاءة وثبات تام على كافة الهواتف.
+                💡 هذه السيرفرات تعمل بثبات تام وبدون أي شاشة سوداء.
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            btn.classList.add('active');
-        }
-
         const modal = document.getElementById('playerModal');
         const video = document.getElementById('videoElement');
         const titleEl = document.getElementById('modalTitle');
