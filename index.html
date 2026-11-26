@@ -1,110 +1,163 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Said TV Live - البث المباشر (الاشتراك الفعلي)</title>
+    <title>Said TV Live - النسخة المطورة فائقة الحداثة</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .channel-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3); }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .light .glass-panel { background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(0, 0, 0, 0.08); }
+        .channel-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .channel-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.35); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.6); }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
+        }
+        .live-badge { animation: pulse-glow 2s infinite; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 transition-colors duration-300" id="bodyRoot">
 
-    <!-- Header -->
-    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/80 border-b border-slate-800/80 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            
+            <!-- Logo & Brand -->
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center">
-                    <i class="fa-solid fa-tv text-xl"></i>
+                <div class="relative">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-75 animate-pulse"></div>
+                    <div class="relative bg-slate-900 text-white p-2.5 rounded-2xl border border-slate-700 flex items-center justify-center shadow-xl">
+                        <i class="fa-solid fa-satellite-dish text-xl text-indigo-400"></i>
+                    </div>
                 </div>
                 <div>
-                    <h1 class="text-xl font-black bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Said TV Live</h1>
-                    <p class="text-xs text-slate-400">اشتراك IPTV الفعلي (قنوات رياضية، بين سبورت، ومباشر)</p>
+                    <h1 class="text-xl font-black bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">Said TV Live</h1>
+                    <p class="text-[11px] text-slate-400 font-medium">منصة البث الذكي المتطورة 2026</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
-                    <span class="w-2 h-2 mr-1.5 bg-red-500 rounded-full animate-pulse"></span>
-                    متصل بالاشتراك
+
+            <!-- Interactive Actions & Telegram -->
+            <div class="flex items-center gap-2.5 flex-wrap justify-center">
+                <!-- Telegram Channel Button -->
+                <a href="https://t.me/SAIDANTIBAN1" target="_blank" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-sky-500/25 flex items-center gap-2 transition transform active:scale-95">
+                    <i class="fa-brands fa-telegram text-base"></i>
+                    <span>قناة التليجرام</span>
+                </a>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition" title="تبديل الوضع الليلي/النهاري">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <!-- Status Badge -->
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 live-badge">
+                    <span class="w-2 h-2 mr-1.5 bg-red-500 rounded-full animate-ping"></span>
+                    بث مباشر فائق الوضوح
                 </span>
             </div>
+
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
         
-        <!-- Video Player Section -->
+        <!-- Video Player Column (2 Cols) -->
         <div class="lg:col-span-2 flex flex-col space-y-4">
-            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 aspect-video flex items-center justify-center group">
-                <video id="videoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
-                <div id="playerOverlay" class="absolute inset-0 bg-slate-950/85 flex flex-col items-center justify-center p-6 text-center transition-opacity z-10">
-                    <div class="w-16 h-16 bg-blue-600/20 text-blue-400 rounded-full flex items-center justify-center mb-4 border border-blue-500/30">
-                        <i class="fa-solid fa-play text-2xl"></i>
+            
+            <!-- Video Container with Zoom Controls -->
+            <div id="playerWrapper" class="relative bg-black rounded-3xl overflow-hidden shadow-2xl border border-slate-800/80 aspect-video flex items-center justify-center group">
+                <video id="videoPlayer" class="w-full h-full object-contain transition-transform duration-300" controls autoplay playsinline></video>
+                
+                <!-- Zoom / Fit Control Floating Button -->
+                <div class="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex gap-2">
+                    <button onclick="toggleZoom()" id="zoomBtn" class="bg-slate-900/80 hover:bg-slate-900 text-white p-2.5 rounded-xl backdrop-blur-md border border-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-lg transition" title="تكبير / ملء الشاشة">
+                        <i class="fa-solid fa-expand text-sm"></i>
+                        <span class="hidden sm:inline">تكبير (Fit)</span>
+                    </button>
+                </div>
+
+                <!-- Overlay when no channel selected -->
+                <div id="playerOverlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-opacity z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 text-indigo-400 rounded-3xl flex items-center justify-center mb-4 border border-indigo-500/30 shadow-xl shadow-indigo-500/10 animate-bounce">
+                        <i class="fa-solid fa-tv text-3xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-1">اختر قناة لبدء المشاهدة</h3>
-                    <p class="text-sm text-slate-400">تم جلب القنوات المباشرة من اشتراكك الفعلي بنجاح</p>
+                    <h3 class="text-xl font-black text-white mb-2">مرحباً بك في Said TV Live</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 max-w-md">اختر أي قناة من قائمة البث الجانبية للاستمتاع بالمشاهدة الفورية بجودة عالية.</p>
                 </div>
             </div>
 
-            <!-- Current Channel Info & Controls -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-                <div class="flex items-center space-x-3 space-x-reverse w-full sm:w-auto">
-                    <img id="currentLogo" src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop" class="w-12 h-12 rounded-xl object-cover border border-slate-700" alt="Channel">
-                    <div>
-                        <h2 id="currentTitle" class="text-lg font-bold text-white">لم يتم اختيار قناة</h2>
-                        <p id="currentCategory" class="text-xs text-blue-400 font-medium">اختر قناة من القائمة الجانبية</p>
+            <!-- Active Channel Bar -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                <div class="flex items-center space-x-3.5 space-x-reverse w-full sm:w-auto">
+                    <div class="relative flex-shrink-0">
+                        <img id="currentLogo" src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop" class="w-14 h-14 rounded-2xl object-cover border border-slate-700 shadow-md" alt="">
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+                    </div>
+                    <div class="min-w-0">
+                        <h2 id="currentTitle" class="text-base sm:text-lg font-black text-white truncate">لم تقم باختيار قناة بعد</h2>
+                        <p id="currentCategory" class="text-xs text-indigo-400 font-semibold truncate mt-0.5">اختر من القائمة لتشغيل البث</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button onclick="toggleFavorite()" id="favBtn" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 text-xs font-semibold flex items-center gap-2" title="إضافة للمفضلة">
-                        <i class="fa-regular fa-heart text-base text-red-400"></i> المفضلة
+                <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                    <button onclick="toggleFavorite()" id="favBtn" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 transition border border-slate-700 text-xs font-bold flex items-center gap-2 shadow-md">
+                        <i class="fa-regular fa-heart text-red-400 text-sm"></i>
+                        <span>المفضلة</span>
                     </button>
-                    <button onclick="reloadStream()" class="px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition shadow-md shadow-blue-600/30 text-xs font-semibold flex items-center gap-2" title="تحديث البث">
-                        <i class="fa-solid fa-rotate"></i> إعادة تحميل
+                    <button onclick="reloadStream()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white transition shadow-lg shadow-indigo-600/30 text-xs font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>إعادة تحميل</span>
                     </button>
                 </div>
             </div>
+
         </div>
 
-        <!-- Channels List & Categories -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col h-[600px] shadow-lg">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                <h3 class="font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-satellite-dish text-blue-400"></i> قنوات الاشتراك الفعلي
+        <!-- Channels Directory Column (1 Col) -->
+        <div class="glass-panel rounded-3xl p-4 flex flex-col h-[650px] shadow-2xl">
+            <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-800/80">
+                <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-indigo-400"></i> قنوات البث الحية
                 </h3>
-                <span id="channelCount" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">0 قناة</span>
+                <span id="channelCount" class="text-xs bg-slate-800/80 text-indigo-300 px-3 py-1 rounded-xl border border-slate-700 font-bold">0 قناة</span>
             </div>
 
-            <!-- Search Box -->
-            <div class="mb-3">
-                <input type="text" id="searchInput" placeholder="ابحث عن قناة (رياضة، بين سبورت، MBC...)" oninput="searchChannels()" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition">
+            <!-- Search Field -->
+            <div class="mb-3 relative">
+                <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-search text-xs"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="ابحث عن اسم القناة، الرياضة، الأفلام..." oninput="searchChannels()" class="w-full bg-slate-900/60 border border-slate-700/80 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition shadow-inner">
             </div>
 
-            <!-- Categories Filter -->
-            <div id="categoriesContainer" class="flex gap-2 overflow-x-auto pb-3 mb-3 scrollbar-none">
-                <button onclick="filterCategory('الكل')" class="cat-btn active px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white whitespace-nowrap shadow-md shadow-blue-600/30 transition">الكل</button>
+            <!-- Categories Horizontal Filter -->
+            <div id="categoriesContainer" class="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-none">
+                <button onclick="filterCategory('الكل')" class="cat-btn active px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white whitespace-nowrap shadow-lg shadow-indigo-600/30 transition">الكل</button>
             </div>
 
-            <!-- Channels Container -->
+            <!-- Channels Scrollable List -->
             <div id="channelsList" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
-                <div class="text-center py-10 text-slate-400 text-xs">جاري تحميل القنوات...</div>
+                <div class="flex flex-col items-center justify-center py-20 text-center">
+                    <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    <p class="text-xs text-slate-400">جاري تحميل باقة القنوات...</p>
+                </div>
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800 mt-auto">
-        Said TV Live &copy; 2026 - جميع الحقوق محفوظة
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/80 mt-auto bg-slate-900/40">
+        Said TV Live &copy; 2026 - تم التطوير بكل إتقان واحترافية
     </footer>
 
     <script>
@@ -112,6 +165,7 @@
         let currentCategory = 'الكل';
         let currentChannel = null;
         let hls = null;
+        let zoomState = 0; // 0: contain, 1: cover, 2: fill
 
         async function loadChannels() {
             try {
@@ -121,7 +175,7 @@
                 renderChannels('الكل');
             } catch (e) {
                 console.error("Error loading channels:", e);
-                document.getElementById('channelsList').innerHTML = '<div class="text-center py-10 text-red-400 text-xs">فشل تحميل القنوات</div>';
+                document.getElementById('channelsList').innerHTML = '<div class="text-center py-10 text-red-400 text-xs">فشل تحميل القنوات، تأكد من ملف القنوات.</div>';
             }
         }
 
@@ -133,7 +187,7 @@
             const container = document.getElementById('categoriesContainer');
             catsSet.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap transition border border-slate-700';
+                btn.className = 'cat-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-700 text-slate-300 whitespace-nowrap transition border border-slate-700/80';
                 btn.textContent = cat;
                 btn.onclick = () => filterCategory(cat);
                 container.appendChild(btn);
@@ -144,11 +198,11 @@
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 if (btn.textContent === cat) {
-                    btn.classList.remove('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
-                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/30');
+                    btn.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700/80');
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border-transparent');
                 } else {
-                    btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/30');
-                    btn.classList.add('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
+                    btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border-transparent');
+                    btn.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700/80');
                 }
             });
             renderChannels(cat);
@@ -171,28 +225,28 @@
             document.getElementById('channelCount').textContent = `${channels.length} قناة`;
 
             if (channels.length === 0) {
-                listEl.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">لا توجد قنوات مطابقة</div>';
+                listEl.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">لا توجد قنوات مطابقة لبحثك</div>';
                 return;
             }
 
             channels.forEach(channel => {
                 const isSelected = currentChannel && currentChannel.url === channel.url;
                 const div = document.createElement('div');
-                div.className = `channel-card flex items-center justify-between p-3 rounded-xl cursor-pointer transition border ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-md shadow-blue-500/10' : 'bg-slate-800/50 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600'}`;
+                div.className = `channel-card flex items-center justify-between p-3 rounded-2xl cursor-pointer transition border ${isSelected ? 'bg-indigo-600/20 border-indigo-500 shadow-md shadow-indigo-500/20' : 'bg-slate-900/50 border-slate-800/80 hover:bg-slate-800/80 hover:border-slate-700'}`;
                 div.onclick = () => playChannel(channel);
                 
                 const logoImg = channel.logo && channel.logo.startsWith('http') ? channel.logo : 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop';
 
                 div.innerHTML = `
                     <div class="flex items-center space-x-3 space-x-reverse truncate">
-                        <img src="${logoImg}" class="w-10 h-10 rounded-lg object-cover border border-slate-700 flex-shrink-0" alt="" onerror="this.src='https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop'">
+                        <img src="${logoImg}" class="w-11 h-11 rounded-xl object-cover border border-slate-700 flex-shrink-0 shadow-sm" alt="" onerror="this.src='https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop'">
                         <div class="truncate">
-                            <h4 class="font-bold text-sm text-white truncate">${channel.name}</h4>
-                            <span class="text-[11px] text-slate-400 truncate">${channel.group}</span>
+                            <h4 class="font-bold text-xs sm:text-sm text-white truncate">${channel.name}</h4>
+                            <span class="text-[10px] text-indigo-400 font-medium truncate block mt-0.5">${channel.group}</span>
                         </div>
                     </div>
-                    <div class="text-xs ${isSelected ? 'text-blue-400 font-bold' : 'text-slate-500'} flex-shrink-0 pr-2">
-                        <i class="fa-solid ${isSelected ? 'fa-signal animate-pulse' : 'fa-play'}"></i>
+                    <div class="text-xs ${isSelected ? 'text-indigo-400 font-bold' : 'text-slate-500'} flex-shrink-0 pr-2">
+                        <i class="fa-solid ${isSelected ? 'fa-satellite-dish animate-pulse text-sm' : 'fa-play text-xs'}"></i>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -264,6 +318,39 @@
             } else {
                 icon.classList.remove('fa-solid', 'text-red-500');
                 icon.classList.add('fa-regular', 'text-red-400');
+            }
+        }
+
+        function toggleZoom() {
+            const video = document.getElementById('videoPlayer');
+            const zoomBtn = document.getElementById('zoomBtn');
+            zoomState = (zoomState + 1) % 3;
+            
+            if (zoomState === 0) {
+                video.style.objectFit = 'contain';
+                zoomBtn.innerHTML = '<i class="fa-solid fa-expand text-sm"></i><span class="hidden sm:inline">تكبير (Fit)</span>';
+            } else if (zoomState === 1) {
+                video.style.objectFit = 'cover';
+                zoomBtn.innerHTML = '<i class="fa-solid fa-compress text-sm"></i><span class="hidden sm:inline">ملء الشاشة (Cover)</span>';
+            } else {
+                video.style.objectFit = 'fill';
+                zoomBtn.innerHTML = '<i class="fa-solid fa-maximize text-sm"></i><span class="hidden sm:inline">تمديد (Fill)</span>';
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                document.body.className = "min-h-screen flex flex-col bg-slate-100 text-slate-900 transition-colors duration-300";
+                themeIcon.className = "fa-solid fa-sun text-sm text-amber-500";
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                document.body.className = "min-h-screen flex flex-col bg-slate-950 text-slate-100 transition-colors duration-300";
+                themeIcon.className = "fa-solid fa-moon text-sm text-slate-300";
             }
         }
 
