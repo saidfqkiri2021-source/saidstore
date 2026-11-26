@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كورة لايف - مباريات اليوم</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background: #0b0f19; color: #f8fafc; padding: 15px; min-height: 100vh; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(30, 41, 59, 0.8); padding: 15px; border-radius: 16px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        h1 { font-size: 20px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .live-badge { background: #ef4444; color: white; font-size: 11px; padding: 3px 8px; border-radius: 20px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .match-card { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .teams { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; margin-bottom: 12px; }
+        .score { background: #1e293b; padding: 6px 16px; border-radius: 10px; color: #38bdf8; font-size: 18px; letter-spacing: 2px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .match-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px; padding-top: 10px; }
+        .btn-watch { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚽ كورة لايف <span class="live-badge">مباشر</span></h1>
+        <span style="font-size: 13px; color: #94a3b8;">الخميس 26 نوفمبر 2026</span>
+    </header>
+
+    <div id="matchList">
+        <div class="match-card">
+            <div class="teams">
+                <span>ريال مدريد</span>
+                <span class="score">2 - 1</span>
+                <span>برشلونة</span>
+            </div>
+            <div class="match-info">
+                <span>الدوري الإسباني • الشوط الثاني (84')</span>
+                <button class="btn-watch" onclick="alert('جاري تشغيل بث المباراة الآن...')">📺 بث مباشر</button>
+            </div>
+        </div>
+
+        <div class="match-card">
+            <div class="teams">
+                <span>ليفربول</span>
+                <span class="score">0 - 0</span>
+                <span>مانشستر سيتي</span>
+            </div>
+            <div class="match-info">
+                <span>دوري أبطال أوروبا • تبدأ 21:00</span>
+                <button class="btn-watch" style="background: #3b82f6;" onclick="alert('تم تفعيل التنبيه للمباراة!')">⏰ تذكير</button>
+            </div>
+        </div>
+
+        <div class="match-card">
+            <div class="teams">
+                <span>بايرن ميونخ</span>
+                <span class="score">3 - 0</span>
+                <span>باريس سان جيرمان</span>
+            </div>
+            <div class="match-info">
+                <span>دوري أبطال أوروبا • انتهت</span>
+                <span style="color: #22c55e; font-weight: bold;">انتهت المباراة</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
