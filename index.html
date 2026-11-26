@@ -48,20 +48,20 @@
     </header>
 
     <div class="section-title">
-        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية (مباشر)</span>
+        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية</span>
     </div>
 
     <div class="channels-grid">
-        <!-- مثال لقناة تعمل بنظام Embed / صفحة ويب -->
-        <div class="channel-card" onclick="playStream('https://www.youtube.com/embed/live_stream?channel=UC...찼', 'beIN Sports HD (Embed)', 'embed')">
-            <div class="channel-logo" style="color:#ef4444;"><i class="fa-solid fa-tv"></i></div>
+        <!-- beIN Sports Xtra 2 -->
+        <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2', 'hls')">
+            <div class="channel-logo" style="color:#38bdf8;"><i class="fa-solid fa-tv"></i></div>
             <div>
-                <div class="channel-name">beIN Sports HD</div>
-                <div class="channel-qual">مشغل آمن (Embed)</div>
+                <div class="channel-name">beIN XTRA 2</div>
+                <div class="channel-qual">بث رياضي HD</div>
             </div>
         </div>
 
-        <!-- قناة الجزيرة الإخبارية (HLS مباشر) -->
+        <!-- الجزيرة الإخبارية -->
         <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية', 'hls')">
             <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
             <div>
@@ -83,7 +83,6 @@
                     <div class="spinner"></div>
                     <span>جاري الاتصال بالسيرفر...</span>
                 </div>
-                <!-- مشغلان: واحد للفيديو المباشر وواحد للـ Embed -->
                 <video id="videoElement" class="video-element" controls autoplay playsinline preload="auto"></video>
                 <iframe id="iframeElement" class="video-element" allowfullscreen style="display: none;"></iframe>
             </div>
@@ -115,20 +114,29 @@
                 video.style.display = 'none';
                 iframe.style.display = 'block';
                 iframe.src = url;
-                setTimeout(() => loadingOverlay.classList.add('hidden'), 1000);
+                setTimeout(() => loadingOverlay.classList.add('hidden'), 800);
             } else {
                 iframe.style.display = 'none';
                 video.style.display = 'block';
                 iframe.src = '';
 
                 if (Hls.isSupported() && url.includes('.m3u8')) {
-                    hls = new Hls();
+                    hls = new Hls({
+                        xhrSetup: function(xhr, url) {
+                            xhr.withCredentials = false;
+                        }
+                    });
                     hls.loadSource(url);
                     hls.attachMedia(video);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play().then(() => {
                             loadingOverlay.classList.add('hidden');
                         }).catch(e => console.log("Autoplay:", e));
+                    });
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                            hls.startLoad();
+                        }
                     });
                 } else {
                     video.src = url;
