@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAID TV Pro - البث الحي النشط</title>
+    <title>SAID TV Pro - البث الحي الرياضي</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.10/hls.min.js"></script>
     <style>
@@ -11,17 +11,15 @@
         body { background: #07090e; color: #f8fafc; padding: 12px; min-height: 100vh; padding-bottom: 70px; }
         
         header { background: #111827; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(34, 197, 94, 0.2); border-radius: 14px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .logo { font-size: 17px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 18px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 8px; }
         .live-badge { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
 
-        .section-title { font-size: 15px; color: #22c55e; margin: 15px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; justify-content: space-between; align-items: center; }
-
-        .notice-box { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; font-size: 12px; color: #4ade80; margin-bottom: 15px; line-height: 1.5; }
-
+        .section-title { font-size: 15px; color: #22c55e; margin: 20px 0 10px 0; font-weight: bold; border-right: 4px solid #22c55e; padding-right: 8px; display: flex; align-items: center; justify-content: space-between; }
+        
         .channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .channel-card { background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; text-align: right; }
-        .channel-card:hover { border-color: #22c55e; background: #1f2937; }
-        .channel-logo { width: 40px; height: 40px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 18px; flex-shrink: 0; }
+        .channel-card:hover { border-color: #22c55e; background: #1f2937; transform: translateY(-2px); }
+        .channel-logo { width: 42px; height: 42px; background: rgba(34,197,94,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 18px; flex-shrink: 0; }
         .channel-name { font-size: 13px; font-weight: bold; color: #fff; }
         .channel-qual { font-size: 10px; color: #38bdf8; margin-top: 2px; }
 
@@ -45,34 +43,21 @@
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-satellite-dish"></i> SAID TV Pro</div>
-        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> البث المباشر</div>
+        <div class="logo"><i class="fa-solid fa-trophy"></i> SAID TV Pro</div>
+        <div class="live-badge"><i class="fa-solid fa-circle fa-beat"></i> مباشر</div>
     </header>
 
-    <div class="notice-box">
-        <i class="fa-solid fa-circle-check"></i> تم تحديث الواجهة وإضافة زر الجزيرة الإخبارية مع القنوات النشطة والمضمونة.
-    </div>
-
     <div class="section-title">
-        <span>القنوات العاملة والمضمونة</span>
+        <span><i class="fa-solid fa-futbol"></i> القنوات الرياضية</span>
     </div>
 
     <div class="channels-grid">
-        <!-- الجزيرة الإخبارية -->
-        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية')">
-            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
-            <div>
-                <div class="channel-name">الجزيرة الإخبارية</div>
-                <div class="channel-qual">شغالة 100% (بث رسمي)</div>
-            </div>
-        </div>
-
-        <!-- beIN Xtra 2 -->
+        <!-- beIN Sports Xtra 2 -->
         <div class="channel-card" onclick="playStream('https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol.m3u8', 'beIN SPORTS XTRA 2')">
             <div class="channel-logo" style="color:#38bdf8;"><i class="fa-solid fa-tv"></i></div>
             <div>
                 <div class="channel-name">beIN XTRA 2</div>
-                <div class="channel-qual">شغالة 100%</div>
+                <div class="channel-qual">بث رياضي HD</div>
             </div>
         </div>
 
@@ -81,7 +66,22 @@
             <div class="channel-logo" style="color:#eab308;"><i class="fa-solid fa-globe"></i></div>
             <div>
                 <div class="channel-name">beIN Global HD</div>
-                <div class="channel-qual">شغالة 100%</div>
+                <div class="channel-qual">بث عالمي</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span><i class="fa-solid fa-satellite-dish"></i> قنوات عامة وإخبارية</span>
+    </div>
+
+    <div class="channels-grid">
+        <!-- الجزيرة الإخبارية -->
+        <div class="channel-card" onclick="playStream('https://live-hls-apps-ajd-fa.getaj.net/AJD/index.m3u8', 'الجزيرة الإخبارية')">
+            <div class="channel-logo" style="color:#22c55e;"><i class="fa-solid fa-newspaper"></i></div>
+            <div>
+                <div class="channel-name">الجزيرة الإخبارية</div>
+                <div class="channel-qual">بث رسمي مباشر</div>
             </div>
         </div>
     </div>
@@ -96,12 +96,12 @@
             <div class="video-wrapper">
                 <div id="loadingOverlay" class="loading-overlay">
                     <div class="spinner"></div>
-                    <span>جاري تشغيل البث المباشر...</span>
+                    <span>جاري الاتصال بالسيرفر...</span>
                 </div>
                 <video id="videoElement" class="video-element" controls autoplay playsinline preload="auto"></video>
             </div>
             <div class="player-info-bar">
-                💡 هذه السيرفرات تعمل بثبات تام وبدون أي شاشة سوداء.
+                ⚡ استمتع بمشاهدة البث المباشر بجودة عالية وثبات تام.
             </div>
         </div>
     </div>
@@ -138,7 +138,6 @@
                 });
                 hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
-                        console.warn("HLS fatal error:", data);
                         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
                             hls.startLoad();
                         }
