@@ -1,7 +1,155 @@
-<div class="video-container" style="background: #000; border-radius: 14px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-    <video controls width="100%" style="display: block; aspect-ratio: 16/9;">
-        <!-- رابط الفيديو المباشر (mp4 أو رابط بث حقيقي) -->
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        متصفحك لا يدعم تشغيل الفيديو.
-    </video>
-</div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAID CINEMA - أحدث الأفلام والمسلسلات</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #07090e; color: #f8fafc; padding: 15px; min-height: 100vh; }
+        
+        header { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .logo { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .date-badge { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+
+        .notice-box { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 12px; border-radius: 12px; font-size: 13px; color: #38bdf8; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; line-height: 1.5; }
+
+        /* Video Player Section */
+        .player-container { background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); }
+        .player-placeholder { width: 100%; aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1f2937 0%, #0b0f19 100%); color: #94a3b8; gap: 12px; cursor: pointer; text-align: center; padding: 20px; }
+        .player-placeholder i { font-size: 48px; color: #38bdf8; }
+        .player-placeholder span { font-size: 14px; font-weight: bold; color: #fff; }
+
+        .section-title { font-size: 16px; color: #38bdf8; margin: 20px 0 12px 0; font-weight: bold; border-right: 4px solid #38bdf8; padding-right: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Movies Grid */
+        .movies-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .movie-card { background: #111827; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        .movie-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: #1f2937; }
+        .movie-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: space-between; }
+        .movie-title { font-size: 14px; font-weight: bold; color: #fff; }
+        .movie-meta { font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; }
+        .watch-btn { background: #2563eb; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
+        .watch-btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-film"></i> SAID CINEMA</div>
+        <div class="date-badge">أفلام 2026 الحصرية</div>
+    </header>
+
+    <div class="notice-box">
+        <i class="fa-solid fa-circle-info fa-lg" style="color: #38bdf8;"></i>
+        <span>اختر الفيلم الذي تود مشاهدته أدناه، وسيبدأ العرض فوراً في المشغل الداخلي بجودة عالية وبدون إعلانات مزعجة.</span>
+    </div>
+
+    <!-- مشغل الفيديو الداخلي للأفلام -->
+    <div class="player-container">
+        <div id="playerWrapper">
+            <div class="player-placeholder">
+                <i class="fa-solid fa-clapperboard"></i>
+                <span>اختر فيلماً من القائمة أدناه لبدء المشاهدة فوراً</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span><i class="fa-solid fa-fire"></i> أحدث أفلام الأكشن والمغامرة</span>
+    </div>
+
+    <!-- قائمة الأفلام -->
+    <div class="movies-grid">
+        
+        <!-- فيلم 1 -->
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
+            <div class="movie-info">
+                <div>
+                    <div class="movie-title">المقاتل الأخير (Action 2026)</div>
+                    <div class="movie-meta"><span>أكشن • مغامرة</span><span>⭐ 8.4</span></div>
+                </div>
+                <button class="watch-btn" onclick="playMovie('https://test-streams.mux.dev/x36hls/url_2/193039.m3u8', 'المقاتل الأخير')">
+                    <i class="fa-solid fa-play"></i> مشاهدة الفيلم
+                </button>
+            </div>
+        </div>
+
+        <!-- فيلم 2 -->
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
+            <div class="movie-info">
+                <div>
+                    <div class="movie-title">سر السهول الكبرى (Drama)</div>
+                    <div class="movie-meta"><span>دراما • تشويق</span><span>⭐ 8.1</span></div>
+                </div>
+                <button class="watch-btn" onclick="playMovie('https://cph-p2p-ms.akamaized.net/hls/live/2000341/test/master.m3u8', 'سر السهول الكبرى')">
+                    <i class="fa-solid fa-play"></i> مشاهدة الفيلم
+                </button>
+            </div>
+        </div>
+
+        <!-- فيلم 3 -->
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
+            <div class="movie-info">
+                <div>
+                    <div class="movie-title">رحلة الفضاء البعيد (Sci-Fi)</div>
+                    <div class="movie-meta"><span>خيال علمي</span><span>⭐ 8.8</span></div>
+                </div>
+                <button class="watch-btn" onclick="playMovie('https://test-streams.mux.dev/x36hls/url_2/193039.m3u8', 'رحلة الفضاء البعيد')">
+                    <i class="fa-solid fa-play"></i> مشاهدة الفيلم
+                </button>
+            </div>
+        </div>
+
+        <!-- فيلم 4 -->
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=60" class="movie-poster" alt="Movie">
+            <div class="movie-info">
+                <div>
+                    <div class="movie-title">مهمة المستحيل (Thriller)</div>
+                    <div class="movie-meta"><span>حركة • غموض</span><span>⭐ 8.5</span></div>
+                </div>
+                <button class="watch-btn" onclick="playMovie('https://cph-p2p-ms.akamaized.net/hls/live/2000341/test/master.m3u8', 'مهمة المستحيل')">
+                    <i class="fa-solid fa-play"></i> مشاهدة الفيلم
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- استدعاء مكتبة HLS لتشغيل روابط البث والأفلام بسلاسة -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        let currentHls = null;
+
+        function playMovie(url, title) {
+            const wrapper = document.getElementById('playerWrapper');
+            wrapper.innerHTML = `<video id="videoElement" controls autoplay playsinline style="width:100%; aspect-ratio:16/9; background:#000;"></video>`;
+            const video = document.getElementById('videoElement');
+
+            if (Hls.isSupported()) {
+                if (currentHls) {
+                    currentHls.destroy();
+                }
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                currentHls = hls;
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play().catch(e => console.log("Autoplay error:", e));
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+            }
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>
