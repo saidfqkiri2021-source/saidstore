@@ -3,41 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Said TV Live - البث المباشر</title>
+    <title>Said TV Live - البث المباشر المتطور</title>
     <!-- Tailwind CSS v4 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .channel-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f8fafc; overflow-x: hidden; }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .channel-card, .country-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .channel-card:hover, .country-card:hover {
+            transform: translateY(-2px) scale(1.01);
+            background: rgba(30, 41, 59, 0.85);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.3);
+        }
+
+        @keyframes tgPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+            70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
+
+        .tg-float-btn {
+            animation: tgPulse 2.5s infinite;
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        .tg-float-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px -5px rgba(14, 165, 233, 0.6);
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 4px; }
+        
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
 
     <!-- Header -->
-    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+    <header class="glass-panel border-b border-slate-800/80 sticky top-0 z-50 px-4 py-3 shadow-2xl">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center">
-                    <i class="fa-solid fa-tv text-xl"></i>
+                <div class="bg-gradient-to-tr from-sky-500 via-blue-600 to-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-sky-500/30 flex items-center justify-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <i class="fa-solid fa-satellite-dish text-xl relative z-10"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-black bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Said TV Live</h1>
-                    <p class="text-xs text-slate-400">بث مباشر (قنوات رياضية، أفلام، وأطفال)</p>
+                    <h1 class="text-xl font-black bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-300 bg-clip-text text-transparent glow-text">Said TV Live</h1>
+                    <p class="text-xs text-sky-300/80 font-medium">المنصة الذكية للبث المباشر الفضائي</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
-                    <span class="w-2 h-2 mr-1.5 bg-red-500 rounded-full animate-pulse"></span>
-                    متصل
-                </span>
+
+            <!-- Telegram Channel Header Button -->
+            <div class="flex items-center gap-3">
+                <a href="https://t.me/SAIDANTIBAN1" target="_blank" class="tg-float-btn text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-2 border border-sky-400/40">
+                    <i class="fa-brands fa-telegram text-base animate-bounce"></i>
+                    <span>قناة التليجرام</span>
+                </a>
             </div>
         </div>
     </header>
@@ -47,31 +91,31 @@
         
         <!-- Video Player Section -->
         <div class="lg:col-span-2 flex flex-col space-y-4">
-            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 aspect-video flex items-center justify-center group">
+            <div class="relative bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-sky-500/20 aspect-video flex items-center justify-center group">
                 <video id="videoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
-                <div id="playerOverlay" class="absolute inset-0 bg-slate-950/85 flex flex-col items-center justify-center p-6 text-center transition-opacity z-10">
-                    <div class="w-16 h-16 bg-blue-600/20 text-blue-400 rounded-full flex items-center justify-center mb-4 border border-blue-500/30">
-                        <i class="fa-solid fa-play text-2xl"></i>
+                <div id="playerOverlay" class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-slate-950/70 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-all duration-500 z-10">
+                    <div class="w-20 h-20 bg-sky-500/10 text-sky-400 rounded-3xl flex items-center justify-center mb-4 border border-sky-500/30 shadow-2xl shadow-sky-500/20 animate-pulse">
+                        <i class="fa-solid fa-play text-3xl mr-1"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-1">اختر قناة لبدء المشاهدة</h3>
-                    <p class="text-sm text-slate-400">اختر من القائمة الجانبية وتصفح حسب القسم</p>
+                    <h3 class="text-xl font-black text-white mb-2 tracking-wide">اختر قناة لبدء البث الفوري</h3>
+                    <p class="text-sm text-slate-400 max-w-sm">تصفح القنوات حسب الدولة أو التصنيف من القائمة الجانبية</p>
                 </div>
             </div>
 
             <!-- Current Channel Info & Controls -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-                <div class="flex items-center space-x-3 space-x-reverse w-full sm:w-auto">
-                    <div class="w-12 h-12 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-slate-700 text-xl font-bold" id="currentLogoLetter">📺</div>
+            <div class="glass-panel rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4 space-x-reverse w-full sm:w-auto">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600/20 to-blue-600/30 text-sky-400 flex items-center justify-center border border-sky-500/30 text-xl font-black shadow-inner" id="currentLogoLetter">📺</div>
                     <div>
-                        <h2 id="currentTitle" class="text-lg font-bold text-white">لم يتم اختيار قناة</h2>
-                        <p id="currentCategory" class="text-xs text-blue-400 font-medium">اختر قناة من القائمة الجانبية</p>
+                        <h2 id="currentTitle" class="text-lg font-black text-white">لم يتم اختيار قناة</h2>
+                        <p id="currentCategory" class="text-xs text-sky-400 font-semibold mt-0.5">اختر قناة من القائمة الجانبية</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button onclick="toggleFavorite()" id="favBtn" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 text-xs font-semibold flex items-center gap-2" title="إضافة للمفضلة">
-                        <i class="fa-regular fa-heart text-base text-red-400"></i> المفضلة
+                <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                    <button onclick="toggleFavorite()" id="favBtn" class="px-4 py-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 transition border border-slate-700 text-xs font-semibold flex items-center gap-2 backdrop-blur-md" title="إضافة للمفضلة">
+                        <i class="fa-regular fa-heart text-base text-rose-400"></i> المفضلة
                     </button>
-                    <button onclick="reloadStream()" class="px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition shadow-md shadow-blue-600/30 text-xs font-semibold flex items-center gap-2" title="تحديث البث">
+                    <button onclick="reloadStream()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white transition shadow-lg shadow-sky-600/30 text-xs font-semibold flex items-center gap-2" title="تحديث البث">
                         <i class="fa-solid fa-rotate"></i> إعادة تحميل
                     </button>
                 </div>
@@ -79,106 +123,388 @@
         </div>
 
         <!-- Channels List & Categories -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col h-[600px] shadow-lg">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                <h3 class="font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-satellite-dish text-blue-400"></i> قائمة القنوات والأقسام
-                </h3>
-                <span id="channelCount" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">0 قناة</span>
+        <div class="glass-panel rounded-3xl p-4 flex flex-col h-[650px] shadow-2xl">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800/80">
+                <div class="flex items-center gap-2">
+                    <button id="backBtn" onclick="goBackToMain()" class="hidden w-8 h-8 rounded-xl bg-sky-600/20 text-sky-400 border border-sky-500/30 flex items-center justify-center hover:bg-sky-600/40 transition">
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                    <h3 id="panelTitle" class="font-black text-white flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fa-solid fa-bars-staggered text-sky-400"></i> الأقسام الرئيسية
+                    </h3>
+                </div>
+                <span id="channelCount" class="text-xs bg-sky-500/10 text-sky-400 px-3 py-1 rounded-xl border border-sky-500/20 font-bold">0</span>
             </div>
 
             <!-- Search Box -->
-            <div class="mb-3">
-                <input type="text" id="searchInput" placeholder="ابحث عن قناة..." oninput="searchChannels()" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition">
+            <div class="mb-3 relative">
+                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="ابحث عن قناة أو دولة..." oninput="searchChannels()" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 transition shadow-inner">
             </div>
 
-            <!-- Categories Filter -->
-            <div id="categoriesContainer" class="flex gap-2 overflow-x-auto pb-3 mb-3 scrollbar-none">
-                <button onclick="filterCategory('الكل')" class="cat-btn active px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white whitespace-nowrap shadow-md shadow-blue-600/30 transition">الكل</button>
-            </div>
-
-            <!-- Channels Container -->
+            <!-- Main Categories / Countries Container -->
             <div id="channelsList" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
-                <div class="text-center py-10 text-slate-400 text-xs">جاري تحميل القنوات...</div>
+                <!-- Dynamically populated -->
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800 mt-auto">
-        Said TV Live &copy; 2026 - جميع الحقوق محفوظة
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/80 mt-auto bg-slate-950/50">
+        Said TV Live &copy; 2026 - جميع الحقوق محفوظة | تصميم متطور فائق السرعة
     </footer>
 
     <script>
         const allChannels = [
-            { name: "2M Monde HD", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/2m_monde/live.livx/playlist.m3u8", group: "المغرب" },
-            { name: "Al Maghribia", url: "https://d2qh3gh0k5vp3v.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-n6pess5lwbghr/2M_ES.m3u8", group: "المغرب" },
-            { name: "Chada TV", url: "https://edge13.vedge.infomaniak.com/livecast/ik:chadatv/manifest.m3u8", group: "المغرب" },
-            { name: "CNA (Algeria)", url: "https://live.creacast.com/cna/stream/playlist.m3u8", group: "الجزائر" },
-            { name: "Wataniya 1 HD", url: "https://live.tanitweb.com/wataniya1/index.m3u8", group: "تونس" },
-            { name: "Rotana Cinema Egypt", url: "https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8", group: "مصر" },
-            { name: "Rotana Cinema KSA", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/rotana_cinema/live.livx/playlist.m3u8", group: "السعودية" },
-            { name: "Aflam", url: "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8", group: "أفلام ومسلسلات" },
-            { name: "MBC Bollywood", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8", group: "أفلام ومسلسلات" },
-            { name: "MBC+ Drama", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-plus-drama/e37251ec2aac8f6c98f75cd0fa37cd28/index.m3u8", group: "أفلام ومسلسلات" },
-            { name: "Mix Hollywood", url: "https://ml-pull-hwc.myco.io/MixTV/hls/index.m3u8", group: "أفلام ومسلسلات" },
-            { name: "Movies Action", url: "https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8", group: "أفلام ومسلسلات" },
-            { name: "Spacetoon Arabic", url: "https://live-uae-next.spacetoongo.com/ST_MENA_NEXT/hls/r9p2hjipmw2kl.m3u8", group: "أطفال" },
-            { name: "Atfal & Mawaheb TV", url: "https://5aafcc5de91f1.streamlock.net/atfal1.com/atfal2/playlist.m3u8", group: "أطفال" },
-            { name: "Sat 7 Kids", url: "https://svs.itworkscdn.net/sat7kidslive/sat7kids.smil/playlist_dvr.m3u8", group: "أطفال" },
-            { name: "Taha TV", url: "https://stream.starmenajo.com/hls/app/live/ts:fhd.m3u8", group: "أطفال" },
-            { name: "Koogi TV", url: "https://5d658d7e9f562.streamlock.net/koogi.tv/koogi.smil/playlist.m3u8", group: "أطفال" },
-            { name: "Medi1TV Arabic", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-arabic_g90v4ec/playlist.m3u8", group: "أخبار" },
-            { name: "MBC 5", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", group: "عالمية وعامة" }
+            // المغرب
+            { name: "2M Monde HD", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/2m_monde/live.livx/playlist.m3u8", group: "المغرب", type: "دولة" },
+            { name: "Al Maghribia", url: "https://d2qh3gh0k5vp3v.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-n6pess5lwbghr/2M_ES.m3u8", group: "المغرب", type: "دولة" },
+            { name: "Chada TV", url: "https://edge13.vedge.infomaniak.com/livecast/ik:chadatv/manifest.m3u8", group: "المغرب", type: "دولة" },
+            { name: "Medi1TV Arabic", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-arabic_g90v4ec/playlist.m3u8", group: "المغرب", type: "دولة" },
+            { name: "Medi1TV Afrique", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-afrique_tm7tu45/playlist.m3u8", group: "المغرب", type: "دولة" },
+            { name: "Medi1TV Maghreb", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-maghreb_jnbspmg/playlist.m3u8", group: "المغرب", type: "دولة" },
+
+            // الجزائر
+            { name: "CNA (Algeria)", url: "https://live.creacast.com/cna/stream/playlist.m3u8", group: "الجزائر", type: "دولة" },
+            { name: "AL24 News", url: "https://cdn.live.easybroadcast.io/abr_corp/66_al24_u4yga6h/corp/66_al24_u4yga6h_240p/chunks.m3u8", group: "الجزائر", type: "دولة" },
+
+            // تونس
+            { name: "Elyssa TV (Tunisia - 1080p)", url: "https://tv.elyssatv.com/live/master.m3u8", group: "تونس", type: "دولة" },
+
+            // مصر
+            { name: "Al Ghad TV (1080p)", url: "https://eazyvwqssi.erbvr.com/alghadtv/alghadtv.m3u8", group: "مصر", type: "دولة" },
+            { name: "Al Alam Al Yawm", url: "https://mn-nl.mncdn.com/mekameleen/smil:mekameleentv.smil/chunklist_b928000.m3u8", group: "مصر", type: "دولة" },
+            { name: "Mekameleen TV (1080p)", url: "https://mn-nl.mncdn.com/mekameleen/smil:mekameleentv.smil/playlist.m3u8", group: "مصر", type: "دولة" },
+            { name: "Rotana Cinema Egypt", url: "https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8", group: "مصر", type: "دولة" },
+
+            // قطر
+            { name: "Al Jazeera Arabic (1080p)", url: "https://live-hls-apps-aja-fa.getaj.net/AJA/01.m3u8", group: "قطر", type: "دولة" },
+            { name: "Al Jazeera English (1080p)", url: "https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8", group: "قطر", type: "دولة" },
+            { name: "Al Jazeera Mubasher (1080p)", url: "https://live-hls-apps-ajm-fa.getaj.net/AJM/index.m3u8", group: "قطر", type: "دولة" },
+            { name: "Al Jazeera Mubasher 24 (1080p)", url: "https://live-hls-apps-ajm24-fa.getaj.net/AJM24/index.m3u8", group: "قطر", type: "دولة" },
+            { name: "Al Jazeera Mubasher Broadcast 2 (1080p)", url: "https://live-hls-apps-ajm2-fa.getaj.net/AJM2/index.m3u8", group: "قطر", type: "دولة" },
+            { name: "Al Jazeera 2 (1080p)", url: "https://live-hls-web-aja2-gcp.thehlive.com/AJA2/index.m3u8", group: "قطر", type: "دولة" },
+
+            // السعودية
+            { name: "Al Arabiya (1080p)", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Al Arabiya English (1080p)", url: "https://live.alarabiya.net/alarabiapublish/english/playlist_dvr.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Al Arabiya Programs (1280p)", url: "https://live.alarabiya.net/alarabiapublish/aaprograms.smil/playlist.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Al Hadath (1080p)", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-hadath/2ff87ec4c2f3ede35295a20637d9f8fd/index.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Al Ekhbariya (1080p)", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Asharq News (1080p)", url: "https://live-news.asharq.com/asharq.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Asharq Radio (1080p)", url: "https://svs.itworkscdn.net/asharqradiovlive/asharqradiov/playlist.m3u8", group: "السعودية", type: "دولة" },
+            { name: "Rotana Cinema KSA", url: "https://rotana.hibridcdn.net/rotananet/rotana_cinema_net-7Y83PP5adWixDF93/playlist.m3u8", group: "السعودية", type: "دولة" },
+
+            // الإمارات
+            { name: "Al Araby TV (1080p)", url: "https://live.kwikmotion.com/alaraby1live/alaraby_abr/playlist.m3u8", group: "الإمارات", type: "دولة" },
+            { name: "Al Araby TV 2 (1080p)", url: "https://live.kwikmotion.com/alaraby2live/alaraby2.smil/playlist.m3u8", group: "الإمارات", type: "دولة" },
+            { name: "Sky News Arabia (1080p)", url: "https://live-stream.skynewsarabia.com/c-horizontal-channel/horizontal-stream/index.m3u8", group: "الإمارات", type: "دولة" },
+            { name: "Sky News Arabia SD", url: "https://stream.skynewsarabia.com/ott/ott.m3u8", group: "الإمارات", type: "دولة" },
+            { name: "Sky News Arabia Vertical", url: "https://live-stream.skynewsarabia.com/c-vertical-channel/vertical-stream/index.m3u8", group: "الإمارات", type: "دولة" },
+
+            // العراق
+            { name: "Al Iraqia News (720p)", url: "https://imn-live.esite-lab.com/hls/iraqia-news.m3u8", group: "العراق", type: "دولة" },
+            { name: "Alghadeer TV (1080p)", url: "https://sd343444.vodu.store:3356/live/Alghadeer/index.m3u8", group: "العراق", type: "دولة" },
+            { name: "Dijlah TV (1080p)", url: "https://ghaasiflu.online/Dijlah/index.m3u8", group: "العراق", type: "دولة" },
+            { name: "I News (1080p)", url: "https://live.i-news.tv/hls/stream.m3u8", group: "العراق", type: "دولة" },
+            { name: "Altaghier TV (1080p)", url: "https://jmc-live.ercdn.net/altaghier/altaghier.m3u8", group: "العراق", type: "دولة" },
+            { name: "Shams TV (Iraq - 1080p)", url: "https://stream.shams.tv/hls/stream.m3u8", group: "العراق", type: "دولة" },
+
+            // اليمن
+            { name: "Al Masirah (720p)", url: "https://live.cdnbridge.tv/Almasirah/Almasirah_all/playlist.m3u8", group: "اليمن", type: "دولة" },
+            { name: "Al Masirah Mubasher (642p)", url: "https://live2.cdnbridge.tv/AlmasirahMubasher/Mubasher_All/playlist.m3u8", group: "اليمن", type: "دولة" },
+            { name: "Almahriah TV (576p)", url: "https://starmenajo.com/hls/almahriah/index.m3u8", group: "اليمن", type: "دولة" },
+            { name: "Al Masar TV (Yemen)", url: "https://starmenajo.com/hls/almasar/index.m3u8", group: "اليمن", type: "دولة" },
+
+            // سوريا
+            { name: "Halab Today TV (1080p)", url: "https://halabtoday-live.lg.mncdn.com/halabtoday/livestream/playlist.m3u8", group: "سوريا", type: "دولة" },
+            { name: "Alalam News Channel Syria", url: "http://live2.alalam.ir/alalam.m3u8", group: "سوريا", type: "دولة" },
+            { name: "Alikhbaria Syria", url: "http://185.9.2.18/chid_423/index.m3u8", group: "سوريا", type: "دولة" },
+            { name: "Syria TV (1080p)", url: "https://live.kwikmotion.com/syriatvlive/syriatv.smil/playlist_dvr.m3u8", group: "سوريا", type: "دولة" },
+
+            // لبنان
+            { name: "Al Mayadeen TV (576p)", url: "https://mdnlv.cdn.octivid.com/almdn/smil:mpegts.stream.smil/playlist.m3u8", group: "لبنان", type: "دولة" },
+            { name: "Al-Manar (576p)", url: "https://edge.fastpublish.me/live/index.m3u8", group: "لبنان", type: "دولة" },
+            { name: "Red TV Lebanon (1080p)", url: "https://live.kwikmotion.com/redtvlive/redtv.smil/playlist.m3u8", group: "لبنان", type: "دولة" },
+            { name: "Voice of Lebanon (1080p)", url: "https://svs.itworkscdn.net/vdltvlive/vdltv.smil/playlist.m3u8", group: "لبنان", type: "دولة" },
+
+            // فلسطين
+            { name: "Al Najah News (720p)", url: "https://streaming.najah.edu:8443/hls/AlNajah.m3u8", group: "فلسطين", type: "دولة" },
+            { name: "Ma'an TV (720p)", url: "https://htvmada.mada.ps:4443/maannews/index.m3u8", group: "فلسطين", type: "دولة" },
+            { name: "Palestine Al Yawm (720p)", url: "https://live.paltodaytv.com/paltv/live/playlist_sfm4s.m3u8", group: "فلسطين", type: "دولة" },
+            { name: "Seraj TV (Al Aqsa)", url: "https://43869de4e1a0d641.servers.dvcloud.tv/hls/al_aqsa_channel/6udfi7v8a3eof6nlps6e9ovfrs65c7l7.m3u8", group: "فلسطين", type: "دولة" },
+
+            // الأردن
+            { name: "Alhaqeqa Aldawlia (1080p)", url: "https://ghaasiflu.online/alhqeqa/index.m3u8", group: "الأردن", type: "دولة" },
+
+            // الكويت
+            { name: "KTV 2 (Kuwait - 1080p)", url: "https://kwtktv2ta.cdn.mangomolo.com/ktv2/smil:ktv2.stream.smil/chunklist.m3u8", group: "الكويت", type: "دولة" },
+            { name: "KTV News (Kuwait - 1080p)", url: "https://kwtkbta.cdn.mangomolo.com/kb/smil:kb.stream.smil/chunklist.m3u8", group: "الكويت", type: "دولة" },
+
+            // السودان
+            { name: "Dabanga TV (Sudan - 1080p)", url: "https://hls.dabangasudan.org/hls/stream.m3u8", group: "السودان", type: "دولة" },
+
+            // سلطنة عمان
+            { name: "Oman TV Mubashir (1080p)", url: "https://partwota.cdn.mgmlcdn.com/omlive/smil:omlive.stream.smil/chunklist.m3u8", group: "عمان", type: "دولة" },
+
+            // إقليم كردستان
+            { name: "Kurdistan 24 (1080p)", url: "https://hlspackager.akamaized.net/live/DB/K24/HLS/K24.m3u8", group: "كردستان", type: "دولة" },
+            { name: "Kurdsat News (1080p)", url: "https://hlspackager.akamaized.net/live/DB/KURDSAT_NEWS/HLS/KURDSAT_NEWS.m3u8", group: "كردستان", type: "دولة" },
+            { name: "Payam TV (1080p)", url: "https://hlspackager.akamaized.net/live/DB/PAYAM_TV/HLS/PAYAM_TV.m3u8", group: "كردستان", type: "دولة" },
+            { name: "Rudaw TV (1080p)", url: "https://hlspackager.akamaized.net/live/DB/RUDAW/HLS/RUDAW.m3u8", group: "كردستان", type: "دولة" },
+            { name: "Welat TV (1080i)", url: "https://stream.badinan.xyz/welat/tv/playlist.m3u8", group: "كردستان", type: "دولة" },
+
+            // إسرائيل / عرب 48
+            { name: "i24NEWS Arabic (1080p)", url: "https://hlspackager.akamaized.net/live/DB/i24_ARABIC/HLS/i24_ARABIC.m3u8", group: "إسرائيل / عرب 48", type: "دولة" },
+            { name: "Makan 33 (1080p)", url: "https://kancdn.medonecdn.net/livehls/oil/kancdn-live/live/makan/live.livx/playlist.m3u8", group: "إسرائيل / عرب 48", type: "دولة" },
+
+            // تركيا
+            { name: "TRT Arabi (1080p)", url: "https://tv-trtarabi.medya.trt.com.tr/master.m3u8", group: "تركيا", type: "دولة" },
+
+            // روسيا
+            { name: "RT Arabic (1080p)", url: "https://rt-arb.rttv.com/dvr/rtarab/playlist.m3u8", group: "روسيا", type: "دولة" },
+
+            // الصين
+            { name: "CGTN Arabic (1080p)", url: "https://arabic-liveali.cgtn.com/hls/LSveq57bErWLinBnxosqjisZ220802LSTefTAS9zc9mpU08y3np9TH220802cd/playlist.m3u8", group: "الصين", type: "دولة" },
+
+            // فرنسا
+            { name: "France 24 Arabic (1080p)", url: "https://live.france24.com/hls/live/2037222-b/F24_AR_HI_HLS/master_5000.m3u8", group: "فرنسا", type: "دولة" },
+
+            // ألمانيا
+            { name: "DW Arabic (1080p)", url: "https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8", group: "ألمانيا", type: "دولة" },
+
+            // بريطانيا
+            { name: "BBC Arabic (720p)", url: "https://vs-cmaf-pushb-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_arabic_tv/pc_hd_abr_v2.mpd", group: "بريطانيا", type: "دولة" },
+
+            // غينيا
+            { name: "Espace TV (Guinea)", url: "https://edge11.vedge.infomaniak.com/livecast/ik:espacetv/manifest.m3u8", group: "غينيا", type: "دولة" },
+            { name: "Afrik Info TV (Guinea)", url: "https://kali.vdopanel.com:3119/hybrid/play.m3u8", group: "غينيا", type: "دولة" },
+
+            // ساحل العاج
+            { name: "7 Info (Cote d'Ivoire)", url: "https://video1.getstreamhosting.com:1936/8042/8042/playlist.m3u8", group: "ساحل العاج", type: "دولة" },
+
+            // الكاميرون
+            { name: "For You TV (Cameroon)", url: "https://stream.az-multimedia.com:3325/live/foryoutvlive.m3u8", group: "الكاميرون", type: "دولة" },
+            { name: "ACN TV (Cameroon)", url: "https://cdn.acnlive.net/LiveApp/streams/hold_the_line.m3u8", group: "الكاميرون", type: "دولة" },
+            { name: "CRTV News (Cameroon)", url: "https://live1.acangroup.org:1929/publiclive/crtv_news/playlist.m3u8", group: "الكاميرون", type: "دولة" },
+
+            // جنوب إفريقيا
+            { name: "LN24SA (South Africa)", url: "https://cdnstack.internetmultimediaonline.org/ln24/ln24.stream/playlist.m3u8", group: "جنوب إفريقيا", type: "دولة" },
+            { name: "SABC Lehae (South Africa)", url: "https://sabctretalh.cdn.mangomolo.com/lehae/smil:lehae.stream.smil/master.m3u8", group: "جنوب إفريقيا", type: "دولة" },
+            { name: "SABC News (South Africa)", url: "https://sabconetanw.cdn.mangomolo.com/news/smil:news.stream.smil/master.m3u8", group: "جنوب إفريقيا", type: "دولة" },
+
+            // كينيا
+            { name: "Lolwe TV (Kenya)", url: "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8", group: "كينيا", type: "دولة" },
+
+            // نيجيريا
+            { name: "News Central (Nigeria)", url: "https://wf.newscentral.ng:8443/hls/stream.m3u8", group: "نيجيريا", type: "دولة" },
+
+            // الكونغو الديمقراطية
+            { name: "Baraka Television (DR Congo)", url: "https://stream.berosat.live:19360/baraka-hd/baraka-hd.m3u8", group: "الكونغو الديمقراطية", type: "دولة" },
+
+            // بنين
+            { name: "Benin Web TV (Benin)", url: "https://stream.beninwebtv.bj/2/live/stream.m3u8", group: "بنين", type: "دولة" },
+
+            // تصنيفات عامة
+            { name: "News of the World Arabic", url: "https://live.nowtelly.com/now_arabic/live/playlist.m3u8", group: "قنوات دولية", type: "تصنيف" },
+            { name: "Africa 24 (1080p)", url: "https://africa24.vedge.infomaniak.com/livecast/ik:africa24/manifest.m3u8", group: "إفريقيا", type: "تصنيف" },
+            { name: "Africa 24 English", url: "https://edge20.vedge.infomaniak.com/livecast/ik:africa24english/manifest.m3u8", group: "إفريقيا", type: "تصنيف" },
+            { name: "Africa 24 Sport", url: "https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8", group: "إفريقيا", type: "تصنيف" },
+            { name: "Africanews English", url: "https://cdn-euronews.akamaized.net/live/eds/africanews-en/25049/index.m3u8", group: "إفريقيا", type: "تصنيف" },
+            { name: "Africanews French", url: "https://cdn-euronews.akamaized.net/live/eds/africanews-fr/25050/index.m3u8", group: "إفريقيا", type: "تصنيف" },
+            { name: "Aflam", url: "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8", group: "أفلام ومسلسلات", type: "تصنيف" },
+            { name: "MBC Bollywood", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8", group: "أفلام ومسلسلات", type: "تصنيف" },
+            { name: "MBC+ Drama", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-plus-drama/e37251ec2aac8f6c98f75cd0fa37cd28/index.m3u8", group: "أفلام ومسلسلات", type: "تصنيف" },
+            { name: "Mix Hollywood", url: "https://ml-pull-hwc.myco.io/MixTV/hls/index.m3u8", group: "أفلام ومسلسلات", type: "تصنيف" },
+            { name: "Movies Action", url: "https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8", group: "أفلام ومسلسلات", type: "تصنيف" },
+            { name: "Spacetoon Arabic", url: "https://live-uae-next.spacetoongo.com/ST_MENA_NEXT/hls/r9p2hjipmw2kl.m3u8", group: "أطفال", type: "تصنيف" },
+            { name: "Atfal & Mawaheb TV", url: "https://5aafcc5de91f1.streamlock.net/atfal1.com/atfal2/playlist.m3u8", group: "أطفال", type: "تصنيف" },
+            { name: "Sat 7 Kids", url: "https://svs.itworkscdn.net/sat7kidslive/sat7kids.smil/playlist_dvr.m3u8", group: "أطفال", type: "تصنيف" },
+            { name: "Taha TV", url: "https://stream.starmenajo.com/hls/app/live/ts:fhd.m3u8", group: "أطفال", type: "تصنيف" },
+            { name: "Koogi TV", url: "https://5d658d7e9f562.streamlock.net/koogi.tv/koogi.smil/playlist.m3u8", group: "أطفال", type: "تصنيف" },
+            { name: "MBC 5", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", group: "عالمية وعامة", type: "تصنيف" }
         ];
 
-        let currentCategory = 'الكل';
+        let currentView = 'main'; // 'main', 'countries_list', 'country_channels', 'category_channels'
+        let selectedCountry = null;
+        let selectedCategory = null;
         let currentChannel = null;
         let hls = null;
 
         function initApp() {
-            buildCategories();
-            renderChannels('الكل');
+            renderMainCategories();
         }
 
-        function buildCategories() {
-            const catsSet = new Set();
-            allChannels.forEach(c => {
-                if (c.group) catsSet.add(c.group);
-            });
-            const container = document.getElementById('categoriesContainer');
-            catsSet.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap transition border border-slate-700';
-                btn.textContent = cat;
-                btn.onclick = () => filterCategory(cat);
-                container.appendChild(btn);
+        function renderMainCategories() {
+            currentView = 'main';
+            selectedCountry = null;
+            selectedCategory = null;
+            document.getElementById('backBtn').classList.add('hidden');
+            document.getElementById('panelTitle').innerHTML = '<i class="fa-solid fa-bars-staggered text-sky-400"></i> الأقسام الرئيسية';
+            
+            const listEl = document.getElementById('channelsList');
+            listEl.innerHTML = '';
+            document.getElementById('channelCount').textContent = '2 أقسام';
+
+            const sections = [
+                { name: "قنوات تلفزيونية", icon: "fa-earth-americas", desc: "تصفح القنوات مرتبة حسب الدول (المغرب، الجزائر، مصر...)", count: getCountByType('دولة') },
+                { name: "التصنيفات العامة والأفلام والأطفال", icon: "fa-clapperboard", desc: "أفلام، مسلسلات، قنوات أطفال، وتصنيفات دولية", count: getCountByType('تصنيف') }
+            ];
+
+            sections.forEach(sec => {
+                const div = document.createElement('div');
+                div.className = 'country-card flex items-center justify-between p-4 rounded-2xl cursor-pointer';
+                div.onclick = () => {
+                    if (sec.name === "قنوات تلفزيونية") {
+                        renderCountriesList();
+                    } else {
+                        renderCategoriesList();
+                    }
+                };
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3.5 space-x-reverse">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-600/30 to-blue-600/30 text-sky-400 border border-sky-500/30 flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid ${sec.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-white">${sec.name}</h4>
+                            <span class="text-[11px] text-slate-400">${sec.desc}</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-sky-400 font-bold flex items-center gap-1.5 bg-sky-500/10 px-3 py-1.5 rounded-xl border border-sky-500/20">
+                        <span>دخول</span>
+                        <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    </div>
+                `;
+                listEl.appendChild(div);
             });
         }
 
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.textContent === cat) {
-                    btn.classList.remove('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
-                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/30');
-                } else {
-                    btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/30');
-                    btn.classList.add('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
-                }
+        function getCountByType(type) {
+            const set = new Set();
+            allChannels.filter(c => c.type === type).forEach(c => set.add(c.group));
+            return `${set.size} قسم`;
+        }
+
+        function renderCountriesList() {
+            currentView = 'countries_list';
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('panelTitle').innerHTML = '<i class="fa-solid fa-earth-americas text-sky-400"></i> قنوات تلفزيونية (الدول)';
+            
+            const listEl = document.getElementById('channelsList');
+            listEl.innerHTML = '';
+
+            const countriesMap = {};
+            allChannels.filter(c => c.type === 'دولة').forEach(c => {
+                if (!countriesMap[c.group]) countriesMap[c.group] = [];
+                countriesMap[c.group].push(c);
             });
-            renderChannels(cat);
+
+            const countries = Object.keys(countriesMap);
+            document.getElementById('channelCount').textContent = `${countries.length} دولة`;
+
+            countries.forEach(country => {
+                const count = countriesMap[country].length;
+                const div = document.createElement('div');
+                div.className = 'country-card flex items-center justify-between p-3.5 rounded-2xl cursor-pointer';
+                div.onclick = () => renderCountryChannels(country, countriesMap[country]);
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3.5 space-x-reverse">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-600/30 to-blue-600/30 text-sky-400 border border-sky-500/30 flex items-center justify-center font-black text-sm shadow-sm">
+                            📍
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-white">${country}</h4>
+                            <span class="text-[11px] text-sky-400/80 font-medium">${count} قناة متاحة</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-400 flex items-center gap-1">
+                        <span>عرض</span>
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function renderCategoriesList() {
+            currentView = 'categories_list';
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('panelTitle').innerHTML = '<i class="fa-solid fa-clapperboard text-sky-400"></i> التصنيفات العامة';
+            
+            const listEl = document.getElementById('channelsList');
+            listEl.innerHTML = '';
+
+            const catMap = {};
+            allChannels.filter(c => c.type === 'تصنيف').forEach(c => {
+                if (!catMap[c.group]) catMap[c.group] = [];
+                catMap[c.group].push(c);
+            });
+
+            const cats = Object.keys(catMap);
+            document.getElementById('channelCount').textContent = `${cats.length} تصنيف`;
+
+            cats.forEach(cat => {
+                const count = catMap[cat].length;
+                const div = document.createElement('div');
+                div.className = 'country-card flex items-center justify-between p-3.5 rounded-2xl cursor-pointer';
+                div.onclick = () => renderCategoryChannels(cat, catMap[cat]);
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3.5 space-x-reverse">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600/30 to-blue-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-black text-sm shadow-sm">
+                            📺
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-white">${cat}</h4>
+                            <span class="text-[11px] text-indigo-400/80 font-medium">${count} قناة</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-400 flex items-center gap-1">
+                        <span>عرض</span>
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function renderCountryChannels(countryName, channels) {
+            selectedCountry = countryName;
+            currentView = 'country_channels';
+            document.getElementById('panelTitle').innerHTML = `<i class="fa-solid fa-flag text-sky-400"></i> قنوات دولة: ${countryName}`;
+            displayChannelsList(channels);
+        }
+
+        function renderCategoryChannels(catName, channels) {
+            selectedCategory = catName;
+            currentView = 'category_channels';
+            document.getElementById('panelTitle').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> تصنيف: ${catName}`;
+            displayChannelsList(channels);
+        }
+
+        function goBackToMain() {
+            if (currentView === 'country_channels') {
+                renderCountriesList();
+            } else if (currentView === 'category_channels') {
+                renderCategoriesList();
+            } else {
+                renderMainCategories();
+            }
         }
 
         function searchChannels() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query) || c.group.toLowerCase().includes(query));
-            displayChannelsList(filtered);
-        }
+            if (!query) {
+                if (currentView === 'main') renderMainCategories();
+                else if (currentView === 'countries_list') renderCountriesList();
+                else if (currentView === 'categories_list') renderCategoriesList();
+                return;
+            }
 
-        function renderChannels(cat) {
-            const filtered = cat === 'الكل' ? allChannels : allChannels.filter(c => c.group === cat);
+            const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query) || c.group.toLowerCase().includes(query));
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('panelTitle').innerHTML = `<i class="fa-solid fa-magnifying-glass text-sky-400"></i> نتائج البحث`;
             displayChannelsList(filtered);
         }
 
@@ -188,28 +514,28 @@
             document.getElementById('channelCount').textContent = `${channels.length} قناة`;
 
             if (channels.length === 0) {
-                listEl.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">لا توجد قنوات مطابقة</div>';
+                listEl.innerHTML = '<div class="text-center py-12 text-slate-500 text-xs">لا توجد قنوات مطابقة</div>';
                 return;
             }
 
             channels.forEach(channel => {
                 const isSelected = currentChannel && currentChannel.url === channel.url;
                 const div = document.createElement('div');
-                div.className = `channel-card flex items-center justify-between p-3 rounded-xl cursor-pointer transition border ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-md shadow-blue-500/10' : 'bg-slate-800/50 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600'}`;
+                div.className = `channel-card flex items-center justify-between p-3.5 rounded-2xl cursor-pointer ${isSelected ? 'bg-sky-600/20 border-sky-500/80 shadow-lg shadow-sky-500/20' : 'bg-slate-900/40'}`;
                 div.onclick = () => playChannel(channel);
                 
                 const firstLetter = channel.name.charAt(0);
 
                 div.innerHTML = `
-                    <div class="flex items-center space-x-3 space-x-reverse truncate">
-                        <div class="w-10 h-10 rounded-lg bg-blue-600/20 text-blue-400 border border-slate-700 flex items-center justify-center font-bold text-sm flex-shrink-0">${firstLetter}</div>
+                    <div class="flex items-center space-x-3.5 space-x-reverse truncate">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-600/30 to-blue-600/30 text-sky-400 border border-sky-500/30 flex items-center justify-center font-black text-sm flex-shrink-0 shadow-sm">${firstLetter}</div>
                         <div class="truncate">
-                            <h4 class="font-bold text-sm text-white truncate">${channel.name}</h4>
-                            <span class="text-[11px] text-slate-400 truncate">${channel.group}</span>
+                            <h4 class="font-extrabold text-sm text-white truncate">${channel.name}</h4>
+                            <span class="text-[11px] text-sky-400/80 font-medium truncate">${channel.group}</span>
                         </div>
                     </div>
-                    <div class="text-xs ${isSelected ? 'text-blue-400 font-bold' : 'text-slate-500'} flex-shrink-0 pr-2">
-                        <i class="fa-solid ${isSelected ? 'fa-signal animate-pulse' : 'fa-play'}"></i>
+                    <div class="text-xs ${isSelected ? 'text-sky-400 font-black' : 'text-slate-500'} flex-shrink-0 pr-2">
+                        <i class="fa-solid ${isSelected ? 'fa-signal animate-pulse text-sky-400' : 'fa-play'}"></i>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -261,8 +587,6 @@
                     video.play().catch(e => console.log("Autoplay blocked:", e));
                 });
             }
-
-            renderChannels(currentCategory);
         }
 
         function reloadStream() {
@@ -275,11 +599,11 @@
             const btn = document.getElementById('favBtn');
             const icon = btn.querySelector('i');
             if (icon.classList.contains('fa-regular')) {
-                icon.classList.remove('fa-regular', 'text-red-400');
-                icon.classList.add('fa-solid', 'text-red-500');
+                icon.classList.remove('fa-regular', 'text-rose-400');
+                icon.classList.add('fa-solid', 'text-rose-500');
             } else {
-                icon.classList.remove('fa-solid', 'text-red-500');
-                icon.classList.add('fa-regular', 'text-red-400');
+                icon.classList.remove('fa-solid', 'text-rose-500');
+                icon.classList.add('fa-regular', 'text-rose-400');
             }
         }
 
