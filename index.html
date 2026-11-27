@@ -469,4 +469,28 @@
           item.onclick = () => playChannel(ch, item, true);
           listEl.appendChild(item);
 
-          
+          if (firstChannel) {
+            playChannel(ch, item, false);
+            firstChannel = false;
+          }
+        });
+      }
+    }
+
+    function filterChannels() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+
+      const filtered = allChannels.filter(ch => {
+        const matchesQuery = ch.name.toLowerCase().includes(query) || ch.tag.toLowerCase().includes(query);
+        const matchesCategory = currentCategory === "all" || ch.group === currentCategory;
+        return matchesQuery && matchesCategory;
+      });
+
+      renderChannels(filtered);
+    }
+
+    // التشغيل الأولي
+    renderChannels(allChannels);
+  </script>
+</body>
+</html>
