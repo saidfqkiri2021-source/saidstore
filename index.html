@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Said TV Live - البث المباشر</title>
+    <!-- Tailwind CSS v4 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .channel-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3); }
-        ::-webkit-scrollbar { width: 8px; }
+        .channel-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2); }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -51,14 +54,14 @@
                         <i class="fa-solid fa-play text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-bold text-white mb-1">اختر قناة لبدء المشاهدة</h3>
-                    <p class="text-sm text-slate-400">اختر من القائمة الجانبية وتصفح حسب القسم أو الدولة</p>
+                    <p class="text-sm text-slate-400">اختر من القائمة الجانبية وتصفح حسب القسم</p>
                 </div>
             </div>
 
             <!-- Current Channel Info & Controls -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
                 <div class="flex items-center space-x-3 space-x-reverse w-full sm:w-auto">
-                    <img id="currentLogo" src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop" class="w-12 h-12 rounded-xl object-cover border border-slate-700" alt="Channel">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-slate-700 text-xl font-bold" id="currentLogoLetter">📺</div>
                     <div>
                         <h2 id="currentTitle" class="text-lg font-bold text-white">لم يتم اختيار قناة</h2>
                         <p id="currentCategory" class="text-xs text-blue-400 font-medium">اختر قناة من القائمة الجانبية</p>
@@ -108,56 +111,26 @@
     </footer>
 
     <script>
-        // مصفوفة القنوات الكاملة داخل الكود مباشرة بدون ملفات خارجية
         const allChannels = [
-            // المغرب
-            { name: "2M Monde HD", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/2m_monde/live.livx/playlist.m3u8", logo: "https://i.imgur.com/MvpntzA.png", group: "المغرب" },
-            { name: "Al Maghribia (1080p)", url: "https://d2qh3gh0k5vp3v.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-n6pess5lwbghr/2M_ES.m3u8", logo: "https://i.imgur.com/7GaahYh.png", group: "المغرب" },
-            { name: "Chada TV (720p)", url: "https://edge13.vedge.infomaniak.com/livecast/ik:chadatv/manifest.m3u8", logo: "https://freebox.cdn.scw.iliad.fr/medium_Logo_chada_tv_2ee1412d38.png", group: "المغرب" },
-            
-            // الجزائر
-            { name: "CNA (Algeria)", url: "https://live.creacast.com/cna/stream/playlist.m3u8", logo: "https://i.imgur.com/Ki3ySUE.png", group: "الجزائر" },
-            
-            // تونس
-            { name: "Wataniya 1 HD", url: "https://live.tanitweb.com/wataniya1/index.m3u8", logo: "https://upload.wikimedia.org/wikipedia/ar/2/25/Wataniya_1_logo.png", group: "تونس" },
-            
-            // مصر
-            { name: "Rotana Cinema Egypt", url: "https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8", logo: "https://i.imgur.com/dGlKoLW.png", group: "مصر" },
-            
-            // السعودية
-            { name: "Rotana Cinema KSA", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/rotana_cinema/live.livx/playlist.m3u8", logo: "https://i.imgur.com/pGgp38I.png", group: "السعودية" },
-            
-            // أفلام ومسلسلات
-            { name: "Aflam", url: "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8", logo: "https://i.imgur.com/cTLj7Yt.png", group: "أفلام ومسلسلات" },
-            { name: "MBC Bollywood", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8", logo: "https://i.imgur.com/TTAGFHG.png", group: "أفلام ومسلسلات" },
-            { name: "MBC+ Drama", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-plus-drama/e37251ec2aac8f6c98f75cd0fa37cd28/index.m3u8", logo: "https://i.imgur.com/lxWdjXG.png", group: "أفلام ومسلسلات" },
-            { name: "Mix Hollywood", url: "https://ml-pull-hwc.myco.io/MixTV/hls/index.m3u8", logo: "https://i.imgur.com/1ENdbZn.png", group: "أفلام ومسلسلات" },
-            { name: "Movies Action", url: "https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8", logo: "https://i.imgur.com/NIVhISa.png", group: "أفلام ومسلسلات" },
-            { name: "Movies Thriller", url: "https://shd-amg-fast.edgenextcdn.net/tx012/playlist.m3u8", logo: "https://i.imgur.com/JWihdcl.png", group: "أفلام ومسلسلات" },
-            
-            // رياضة
-            { name: "Arryadia (720p)", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8", logo: "https://i.imgur.com/XjzK3gZ.png", group: "رياضة" },
-            
-            // أطفال
-            { name: "Spacetoon Arabic", url: "https://live-uae-next.spacetoongo.com/ST_MENA_NEXT/hls/r9p2hjipmw2kl.m3u8", logo: "https://upload.wikimedia.org/wikipedia/en/2/2b/Spacetoon_logo.png", group: "أطفال" },
-            { name: "Atfal & Mawaheb TV", url: "https://5aafcc5de91f1.streamlock.net/atfal1.com/atfal2/playlist.m3u8", logo: "https://i.imgur.com/Y2BqP9m.png", group: "أطفال" },
-            { name: "Sat 7 Kids", url: "https://svs.itworkscdn.net/sat7kidslive/sat7kids.smil/playlist_dvr.m3u8", logo: "https://i.imgur.com/M0ik0i2.png", group: "أطفال" },
-            { name: "Taha TV", url: "https://stream.starmenajo.com/hls/app/live/ts:fhd.m3u8", logo: "https://i.imgur.com/hdsrxvX.png", group: "أطفال" },
-            { name: "Koogi TV", url: "https://5d658d7e9f562.streamlock.net/koogi.tv/koogi.smil/playlist.m3u8", logo: "https://i.imgur.com/zojMTP9.png", group: "أطفال" },
-            { name: "TRT Cocuk", url: "https://tv-trtcocuk.medya.trt.com.tr/master.m3u8", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/TRT_%C3%87ocuk_logo_%282021%29.svg/960px-TRT_%C3%87ocuk_logo_%282021%29.svg.png", group: "أطفال" },
-            { name: "Pooya TV", url: "https://ncdn.telewebion.ir/pooya/live/playlist.m3u8", logo: "https://upload.wikimedia.org/wikipedia/fa/5/5a/POOYA_tv_2.png", group: "أطفال" },
-            { name: "Sony Yay!", url: "https://r2.amml.in/sony-yay/live.m3u8", logo: "https://dtil.tmsimg.com/assets/s159100_ld_h15_aa.png?lock=720x540", group: "أطفال" },
-            
-            // أخبار
-            { name: "Medi1TV Arabic (1080p)", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-arabic_g90v4ec/playlist.m3u8", logo: "https://i.imgur.com/3YsZPY6.jpeg", group: "أخبار" },
-            { name: "Medi1TV Afrique (1080p)", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-afrique_tm7tu45/playlist.m3u8", logo: "https://i.imgur.com/a20DHnj.png", group: "أخبار" },
-            
-            // موسيقى وأغاني (جاهز)
-            // { name: "اسم القناة", url: "رابط البث", logo: "رابط الشعار", group: "موسيقى وأغاني" },
-
-            // عالمية وعامة
-            { name: "MBC 5 (1080p)", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", logo: "https://i.imgur.com/fRWaDyF.png", group: "عالمية وعامة" },
-            { name: "StoryChannel TV (720p)", url: "https://136044159.r.cdnsun.net/storychannel.m3u8", logo: "https://i.imgur.com/ZBV6xph.png", group: "عالمية وعامة" }
+            { name: "2M Monde HD", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/2m_monde/live.livx/playlist.m3u8", group: "المغرب" },
+            { name: "Al Maghribia", url: "https://d2qh3gh0k5vp3v.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-n6pess5lwbghr/2M_ES.m3u8", group: "المغرب" },
+            { name: "Chada TV", url: "https://edge13.vedge.infomaniak.com/livecast/ik:chadatv/manifest.m3u8", group: "المغرب" },
+            { name: "CNA (Algeria)", url: "https://live.creacast.com/cna/stream/playlist.m3u8", group: "الجزائر" },
+            { name: "Wataniya 1 HD", url: "https://live.tanitweb.com/wataniya1/index.m3u8", group: "تونس" },
+            { name: "Rotana Cinema Egypt", url: "https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8", group: "مصر" },
+            { name: "Rotana Cinema KSA", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/rotana_cinema/live.livx/playlist.m3u8", group: "السعودية" },
+            { name: "Aflam", url: "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8", group: "أفلام ومسلسلات" },
+            { name: "MBC Bollywood", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8", group: "أفلام ومسلسلات" },
+            { name: "MBC+ Drama", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-plus-drama/e37251ec2aac8f6c98f75cd0fa37cd28/index.m3u8", group: "أفلام ومسلسلات" },
+            { name: "Mix Hollywood", url: "https://ml-pull-hwc.myco.io/MixTV/hls/index.m3u8", group: "أفلام ومسلسلات" },
+            { name: "Movies Action", url: "https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8", group: "أفلام ومسلسلات" },
+            { name: "Spacetoon Arabic", url: "https://live-uae-next.spacetoongo.com/ST_MENA_NEXT/hls/r9p2hjipmw2kl.m3u8", group: "أطفال" },
+            { name: "Atfal & Mawaheb TV", url: "https://5aafcc5de91f1.streamlock.net/atfal1.com/atfal2/playlist.m3u8", group: "أطفال" },
+            { name: "Sat 7 Kids", url: "https://svs.itworkscdn.net/sat7kidslive/sat7kids.smil/playlist_dvr.m3u8", group: "أطفال" },
+            { name: "Taha TV", url: "https://stream.starmenajo.com/hls/app/live/ts:fhd.m3u8", group: "أطفال" },
+            { name: "Koogi TV", url: "https://5d658d7e9f562.streamlock.net/koogi.tv/koogi.smil/playlist.m3u8", group: "أطفال" },
+            { name: "Medi1TV Arabic", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-arabic_g90v4ec/playlist.m3u8", group: "أخبار" },
+            { name: "MBC 5", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", group: "عالمية وعامة" }
         ];
 
         let currentCategory = 'الكل';
@@ -225,11 +198,11 @@
                 div.className = `channel-card flex items-center justify-between p-3 rounded-xl cursor-pointer transition border ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-md shadow-blue-500/10' : 'bg-slate-800/50 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600'}`;
                 div.onclick = () => playChannel(channel);
                 
-                const logoImg = channel.logo && channel.logo.startsWith('http') ? channel.logo : 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop';
+                const firstLetter = channel.name.charAt(0);
 
                 div.innerHTML = `
                     <div class="flex items-center space-x-3 space-x-reverse truncate">
-                        <img src="${logoImg}" class="w-10 h-10 rounded-lg object-cover border border-slate-700 flex-shrink-0" alt="" onerror="this.src='https://images.unsplash.com/photo-1593784991095-a205069470b6?w=100&auto=format&fit=crop'">
+                        <div class="w-10 h-10 rounded-lg bg-blue-600/20 text-blue-400 border border-slate-700 flex items-center justify-center font-bold text-sm flex-shrink-0">${firstLetter}</div>
                         <div class="truncate">
                             <h4 class="font-bold text-sm text-white truncate">${channel.name}</h4>
                             <span class="text-[11px] text-slate-400 truncate">${channel.group}</span>
@@ -247,9 +220,8 @@
             currentChannel = channel;
             document.getElementById('currentTitle').textContent = channel.name;
             document.getElementById('currentCategory').textContent = channel.group;
-            if (channel.logo && channel.logo.startsWith('http')) {
-                document.getElementById('currentLogo').src = channel.logo;
-            }
+            document.getElementById('currentLogoLetter').textContent = channel.name.charAt(0);
+            
             document.getElementById('playerOverlay').classList.add('opacity-0', 'pointer-events-none');
 
             const video = document.getElementById('videoPlayer');
