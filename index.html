@@ -92,18 +92,17 @@
     
     .count { background: var(--primary); color: #fff; padding: 5px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: bold; }
 
-    /* شريط البحث والتصنيفات العلوية */
-    .filter-bar {
+    /* شريط البحث والأزرار السريعة */
+    .filter-section {
       max-width: 1300px;
       margin: 16px auto 0 auto;
       padding: 0 16px;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 12px;
     }
     .search-input {
-      flex: 1;
-      min-width: 200px;
+      width: 100%;
       padding: 10px 14px;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -111,14 +110,32 @@
       border-radius: 8px;
       font-size: 0.9rem;
     }
-    .category-select {
-      padding: 10px 14px;
+    
+    /* أزرار التبويب الأفقية للفلترة بضغطة واحدة */
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .tab-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .tab-btn:hover { background: var(--bg-item-hover); }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      font-weight: bold;
     }
 
     .container {
@@ -160,7 +177,6 @@
       overflow-y: auto;
     }
 
-    /* مجموعة القنوات حسب البلد أو الفئة */
     .group-title {
       font-size: 0.85rem;
       font-weight: bold;
@@ -220,19 +236,21 @@
     </div>
   </header>
 
-  <div class="filter-bar">
+  <div class="filter-section">
     <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن اسم القناة..." oninput="filterChannels()" />
-    <select id="categorySelect" class="category-select" onchange="filterChannels()">
-      <option value="all">جميع الأقسام والبلدان</option>
-      <option value="المغرب">🇲🇦 المغرب</option>
-      <option value="مصر">🇪🇬 مصر</option>
-      <option value="السعودية">🇸🇦 السعودية / منوعة</option>
-      <option value="أفلام">🎬 أفلام ومسلسلات</option>
-      <option value="رياضة">⚽ رياضة</option>
-      <option value="أطفال">🧸 أطفال</option>
-      <option value="أخبار">📰 أخبار</option>
-      <option value="منوعة وعالمية">🌍 منوعة وعالمية</option>
-    </select>
+    
+    <!-- أزرار الفرز السريعة بضغطة واحدة -->
+    <div class="tabs-container" id="tabsContainer">
+      <button class="tab-btn active" onclick="setCategory('all', this)">الكل</button>
+      <button class="tab-btn" onclick="setCategory('المغرب', this)">🇲🇦 المغرب</button>
+      <button class="tab-btn" onclick="setCategory('مصر', this)">🇪🇬 مصر</button>
+      <button class="tab-btn" onclick="setCategory('السعودية', this)">🇸🇦 السعودية</button>
+      <button class="tab-btn" onclick="setCategory('أفلام', this)">🎬 أفلام</button>
+      <button class="tab-btn" onclick="setCategory('رياضة', this)">⚽ رياضة</button>
+      <button class="tab-btn" onclick="setCategory('أطفال', this)">🧸 أطفال</button>
+      <button class="tab-btn" onclick="setCategory('أخبار', this)">📰 أخبار</button>
+      <button class="tab-btn" onclick="setCategory('منوعة وعالمية', this)">🌍 منوعة</button>
+    </div>
   </div>
 
   <div class="container">
@@ -298,6 +316,7 @@
     const themeBtn = document.getElementById("themeToggle");
 
     let hls = null;
+    let currentCategory = "all";
 
     function toggleTheme() {
       const html = document.documentElement;
@@ -365,6 +384,13 @@
       }
     }
 
+    function setCategory(category, btnElement) {
+      currentCategory = category;
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      btnElement.classList.add("active");
+      filterChannels();
+    }
+
     function renderChannels(filteredList) {
       listEl.innerHTML = "";
       countEl.textContent = `${filteredList.length} قنوات`;
@@ -374,7 +400,6 @@
         return;
       }
 
-      // تجميع القنوات حسب البلد أو الفئة
       const groups = {};
       filteredList.forEach(ch => {
         const groupKey = ch.country || "أخرى";
@@ -427,11 +452,10 @@
 
     function filterChannels() {
       const query = document.getElementById("searchInput").value.toLowerCase();
-      const category = document.getElementById("categorySelect").value;
 
       const filtered = allChannels.filter(ch => {
         const matchesQuery = ch.name.toLowerCase().includes(query) || ch.tag.toLowerCase().includes(query);
-        const matchesCategory = category === "all" || ch.category === category || ch.country === category;
+        const matchesCategory = currentCategory === "all" || ch.category === currentCategory || ch.country === currentCategory;
         return matchesQuery && matchesCategory;
       });
 
