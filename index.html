@@ -72,7 +72,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-black bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-300 bg-clip-text text-transparent glow-text">Said TV Live</h1>
-                    <p class="text-xs text-sky-300/80 font-medium">المنصة الذكية للبث المباشر الفضائي</p>
+                    <p class="text-xs text-sky-300/80 font-medium" id="totalAppChannelsBadge">إجمالي القنوات المتاحة: جاري الحساب...</p>
                 </div>
             </div>
 
@@ -439,6 +439,7 @@
         }
 
         function initApp() {
+            document.getElementById('totalAppChannelsBadge').textContent = `إجمالي القنوات المتاحة: ${allChannels.length} قناة`;
             renderMainCategories();
         }
 
@@ -453,12 +454,12 @@
             listEl.innerHTML = '';
             
             const favsCount = getFavorites().length;
-            document.getElementById('channelCount').textContent = '3 أقسام';
+            document.getElementById('channelCount').textContent = `${allChannels.length} قناة ككل`;
 
             const sections = [
                 { name: "القنوات المفضلة", icon: "fa-heart", desc: "القنوات التي قمت بحفظها للمشاهدة السريعة", count: `${favsCount} قناة`, action: renderFavoritesList },
-                { name: "قنوات تلفزيونية", icon: "fa-earth-americas", desc: "تصفح القنوات مرتبة حسب الدول (المغرب، الجزائر، مصر...)", count: getCountByType('دولة'), action: renderCountriesList },
-                { name: "التصنيفات العامة والأفلام والأطفال", icon: "fa-clapperboard", desc: "أفلام، مسلسلات، قنوات أطفال، وتصنيفات دولية", count: getCountByType('تصنيف'), action: renderCategoriesList }
+                { name: "قنوات تلفزيونية", icon: "fa-earth-americas", desc: "تصفح القنوات مرتبة حسب الدول (المغرب، الجزائر، مصر...)", count: `${allChannels.filter(c => c.type === 'دولة').length} قناة`, action: renderCountriesList },
+                { name: "التصنيفات العامة والأفلام والأطفال", icon: "fa-clapperboard", desc: "أفلام، مسلسلات، قنوات أطفال، وتصنيفات دولية", count: `${allChannels.filter(c => c.type === 'تصنيف').length} قناة`, action: renderCategoriesList }
             ];
 
             sections.forEach(sec => {
@@ -476,18 +477,12 @@
                         </div>
                     </div>
                     <div class="text-xs text-sky-400 font-bold flex items-center gap-1.5 bg-sky-500/10 px-3 py-1.5 rounded-xl border border-sky-500/20">
-                        <span>دخول</span>
+                        <span>${sec.count}</span>
                         <i class="fa-solid fa-arrow-left text-[10px]"></i>
                     </div>
                 `;
                 listEl.appendChild(div);
             });
-        }
-
-        function getCountByType(type) {
-            const set = new Set();
-            allChannels.filter(c => c.type === type).forEach(c => set.add(c.group));
-            return `${set.size} قسم`;
         }
 
         function renderFavoritesList() {
@@ -530,9 +525,8 @@
                             <span class="text-[11px] text-sky-400/80 font-medium">${count} قناة متاحة</span>
                         </div>
                     </div>
-                    <div class="text-xs text-slate-400 flex items-center gap-1">
-                        <span>عرض</span>
-                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    <div class="text-xs text-sky-400 font-bold bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20">
+                        <span>${count} قناة</span>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -571,9 +565,8 @@
                             <span class="text-[11px] text-indigo-400/80 font-medium">${count} قناة</span>
                         </div>
                     </div>
-                    <div class="text-xs text-slate-400 flex items-center gap-1">
-                        <span>عرض</span>
-                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    <div class="text-xs text-indigo-400 font-bold bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">
+                        <span>${count} قناة</span>
                     </div>
                 `;
                 listEl.appendChild(div);
