@@ -93,7 +93,7 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Video Player Section -->
+        <!-- Video Player & Live Chat Section -->
         <div class="lg:col-span-2 flex flex-col space-y-4">
             <div class="relative bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-sky-500/20 aspect-video flex items-center justify-center group">
                 <video id="videoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
@@ -148,10 +148,50 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Advanced Live Chat Section -->
+            <div class="glass-panel rounded-3xl p-4 sm:p-5 flex flex-col h-[420px] shadow-2xl border border-sky-500/20">
+                <!-- Chat Header & Nickname Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800/80">
+                    <div class="flex items-center gap-2.5">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                        </span>
+                        <h3 class="font-black text-white text-sm sm:text-base">الدردشة المباشرة</h3>
+                        <span id="chatStatusBadge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">مباشر</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-2xl px-3 py-1.5 text-xs">
+                        <i class="fa-solid fa-user text-sky-400"></i>
+                        <span class="text-slate-400 hidden sm:inline">اسمك:</span>
+                        <span id="currentUserNameDisplay" class="font-extrabold text-white">...</span>
+                        <button type="button" onclick="changeUserName()" class="text-sky-400 hover:text-sky-300 font-bold underline mr-1 cursor-pointer">
+                            تغيير
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 pl-1 pr-1 mb-3">
+                    <div class="text-center py-10 text-slate-500 text-xs">جاري تحميل رسائل الدردشة...</div>
+                </div>
+
+                <!-- Send Message Form -->
+                <form id="chatForm" class="flex items-center gap-2 pt-2 border-t border-slate-800/80">
+                    <input type="text" id="chatInput" maxlength="300" placeholder="اكتب رسالتك هنا وشارك المشاهدة..." autocomplete="off" required
+                        class="flex-1 bg-slate-900/90 border border-slate-700/80 rounded-2xl px-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 transition shadow-inner">
+                    <button type="submit" id="chatSendBtn"
+                        class="px-4 sm:px-5 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-sky-600/30 transition cursor-pointer">
+                        <span>إرسال</span>
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Channels List & Categories -->
-        <div class="glass-panel rounded-3xl p-4 flex flex-col h-[650px] shadow-2xl">
+        <div class="glass-panel rounded-3xl p-4 flex flex-col h-[650px] lg:h-full lg:max-h-[1135px] shadow-2xl">
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800/80">
                 <div class="flex items-center gap-2">
                     <button id="backButtonMain" onclick="goBackToMain()" class="hidden w-8 h-8 rounded-xl bg-sky-600/20 text-sky-400 border border-sky-500/30 flex items-center justify-center hover:bg-sky-600/40 transition" title="رجوع للقائمة السابقة">
@@ -430,7 +470,6 @@
             { name: "Mosaique FM (1080p)", url: "https://webcam.mosaiquefm.net/mosatv/_definst_/studio/playlist.m3u8?DVR", group: "قنوات الأغاني والموسيقى", type: "تصنيف" },
             { name: "Falastini TV (1080p)", url: "https://rp.tactivemedia.com/palestiniantv_source/live/playlist.m3u8", group: "قنوات الأغاني والموسيقى", type: "تصنيف" },
             { name: "Marina TV (1080p)", url: "https://ffs.gulfsat.com/Marina-TV-HD/index.m3u8", group: "قنوات الأغاني والموسيقى", type: "تصنيف" },
-
             // تصنيفات عامة أخرى
             { name: "News of the World Arabic", url: "https://live.nowtelly.com/now_arabic/live/playlist.m3u8", group: "قنوات دولية", type: "تصنيف" },
             { name: "Africa 24 (1080p)", url: "https://africa24.vedge.infomaniak.com/livecast/ik:africa24/manifest.m3u8", group: "إفريقيا", type: "تصنيف" },
@@ -451,12 +490,12 @@
             { name: "MBC 5", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", group: "عالمية وعامة", type: "تصنيف" }
         ];
 
-        let currentView = 'main'; // 'main', 'countries_list', 'country_channels', 'category_channels', 'favorites'
+        let currentView = 'main';
         let selectedCountry = null;
         let selectedCategory = null;
         let currentChannel = null;
         let hls = null;
-        let aspectRatioMode = 'contain'; // 'contain', 'cover', 'fill'
+        let aspectRatioMode = 'contain';
 
         function getFavorites() {
             try {
@@ -754,7 +793,6 @@
             }
         }
 
-        // IPTV Floating Controls Functions
         function togglePlayPause() {
             const video = document.getElementById('videoPlayer');
             const icon = document.getElementById('playPauseIcon');
@@ -853,7 +891,6 @@
             }
         }
 
-        // Settings Modal Functions
         function openSettingsModal() {
             document.getElementById('settingsModal').classList.remove('hidden');
         }
@@ -878,6 +915,204 @@
         }
 
         initApp();
+    </script>
+
+    <!-- Firebase Cloud Firestore Live Chat Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            onSnapshot,
+            query,
+            orderBy,
+            limit,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9CONWJPZkD_v6Je08P58QAKidcXXwkOE",
+            authDomain: "said-store-a422e.firebaseapp.com",
+            projectId: "said-store-a422e",
+            storageBucket: "said-store-a422e.firebasestorage.app",
+            messagingSenderId: "1096798610792",
+            appId: "1:1096798610792:web:f127c55882aee152c9a2dd",
+            measurementId: "G-775957Y0DZ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const messagesCol = collection(db, "messages");
+
+        const moroccanNames = [
+            "ياسين", "سلمى", "حمزة", "أمينة", "أنس",
+            "كنزة", "مهدي", "ريم", "أيوب", "هبة",
+            "سفيان", "ياسمين", "عمر", "شيماء", "زكرياء"
+        ];
+
+        const nameColors = [
+            "text-sky-400", "text-emerald-400", "text-amber-400",
+            "text-purple-400", "text-pink-400", "text-cyan-400", "text-lime-400"
+        ];
+
+        function getOrCreateUserId() {
+            let uid = localStorage.getItem("said_tv_uid");
+            if (!uid) {
+                uid = "u_" + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+                localStorage.setItem("said_tv_uid", uid);
+            }
+            return uid;
+        }
+
+        function getOrCreateUserName() {
+            let savedName = localStorage.getItem("said_tv_username");
+            if (!savedName) {
+                const randomName = moroccanNames[Math.floor(Math.random() * moroccanNames.length)];
+                const randomTag = Math.floor(10 + Math.random() * 89);
+                savedName = `${randomName}_${randomTag}`;
+                localStorage.setItem("said_tv_username", savedName);
+            }
+            return savedName;
+        }
+
+        const currentUid = getOrCreateUserId();
+        let currentUserName = getOrCreateUserName();
+
+        const userNameDisplay = document.getElementById("currentUserNameDisplay");
+        const chatMessagesEl = document.getElementById("chatMessages");
+        const chatFormEl = document.getElementById("chatForm");
+        const chatInputEl = document.getElementById("chatInput");
+        const chatSendBtn = document.getElementById("chatSendBtn");
+        const chatStatusBadge = document.getElementById("chatStatusBadge");
+
+        userNameDisplay.textContent = currentUserName;
+
+        window.changeUserName = function () {
+            const newName = prompt("اكتب الاسم الجديد اللي بغيتي يبان فالدردشة:", currentUserName);
+            if (newName && newName.trim().length >= 2) {
+                currentUserName = newName.trim().slice(0, 24);
+                localStorage.setItem("said_tv_username", currentUserName);
+                userNameDisplay.textContent = currentUserName;
+            }
+        };
+
+        function getColorForSender(senderName) {
+            let hash = 0;
+            for (let i = 0; i < senderName.length; i++) {
+                hash = senderName.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return nameColors[Math.abs(hash) % nameColors.length];
+        }
+
+        function formatTime(createdAt) {
+            try {
+                let dateObj;
+                if (createdAt && typeof createdAt.toDate === "function") {
+                    dateObj = createdAt.toDate();
+                } else if (typeof createdAt === "number") {
+                    dateObj = new Date(createdAt);
+                } else {
+                    dateObj = new Date();
+                }
+                return dateObj.toLocaleTimeString("ar-MA", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+            } catch (e) {
+                return "";
+            }
+        }
+
+        function escapeText(str) {
+            const div = document.createElement("div");
+            div.textContent = str || "";
+            return div.textContent;
+        }
+
+        chatFormEl.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const text = chatInputEl.value.trim();
+            if (!text) return;
+
+            chatSendBtn.disabled = true;
+            try {
+                await addDoc(messagesCol, {
+                    uid: currentUid,
+                    sender: currentUserName,
+                    text: text,
+                    createdAt: serverTimestamp(),
+                    clientTime: Date.now()
+                });
+                chatInputEl.value = "";
+                chatInputEl.focus();
+            } catch (err) {
+                console.error("Error sending message:", err);
+                alert("تعذر إرسال الرسالة، تأكد من إعدادات Cloud Firestore وقواعد الوصول (Rules).");
+            } finally {
+                chatSendBtn.disabled = false;
+            }
+        });
+
+        const q = query(messagesCol, orderBy("clientTime", "asc"), limit(80));
+        onSnapshot(q, (snapshot) => {
+            chatStatusBadge.textContent = "متصل";
+            chatMessagesEl.innerHTML = "";
+
+            if (snapshot.empty) {
+                chatMessagesEl.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">لا توجد رسائل بعد. كن أول من يبدأ الدردشة!</div>';
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const isMine = data.uid === currentUid;
+                const senderName = escapeText(data.sender || "زائر");
+                const msgText = escapeText(data.text || "");
+                const timeStr = formatTime(data.createdAt || data.clientTime);
+                const senderColor = getColorForSender(senderName);
+
+                const wrapper = document.createElement("div");
+                wrapper.className = `flex flex-col ${isMine ? "items-start" : "items-end"}`;
+
+                const bubble = document.createElement("div");
+                bubble.className = `max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm break-words shadow-md ${
+                    isMine
+                        ? "bg-gradient-to-br from-sky-600/35 to-blue-700/35 border border-sky-400/30 text-white"
+                        : "bg-slate-800/80 border border-slate-700/60 text-slate-100"
+                }`;
+
+                const headerDiv = document.createElement("div");
+                headerDiv.className = "flex items-center justify-between gap-3 mb-1 text-[11px]";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.className = `font-extrabold ${isMine ? "text-sky-300" : senderColor}`;
+                nameSpan.textContent = isMine ? `${senderName} (أنت)` : senderName;
+
+                const timeSpan = document.createElement("span");
+                timeSpan.className = "text-slate-400 text-[10px]";
+                timeSpan.textContent = timeStr;
+
+                headerDiv.appendChild(nameSpan);
+                headerDiv.appendChild(timeSpan);
+
+                const bodyP = document.createElement("p");
+                bodyP.className = "leading-relaxed";
+                bodyP.textContent = msgText;
+
+                bubble.appendChild(headerDiv);
+                bubble.appendChild(bodyP);
+                wrapper.appendChild(bubble);
+                chatMessagesEl.appendChild(wrapper);
+            });
+
+            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+        }, (error) => {
+            console.error("Firestore listen error:", error);
+            chatStatusBadge.textContent = "خطأ اتصال";
+            chatStatusBadge.className = "text-[11px] px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold";
+            chatMessagesEl.innerHTML = '<div class="text-center py-8 text-rose-400 text-xs">تعذر الاتصال بقاعدة البيانات. تحقق من تفعيل Cloud Firestore وقواعد Règles.</div>';
+        });
     </script>
 </body>
 </html>
