@@ -645,7 +645,9 @@
                 hls.loadSource(channel.url);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(e => console.log("Autoplay blocked:", e));
+                    video.play().then(() => {
+                        tryAutoFullscreenAndLandscape(video);
+                    }).catch(e => console.log("Autoplay blocked:", e));
                 });
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
@@ -665,8 +667,24 @@
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = channel.url;
                 video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(e => console.log("Autoplay blocked:", e));
+                    video.play().then(() => {
+                        tryAutoFullscreenAndLandscape(video);
+                    }).catch(e => console.log("Autoplay blocked:", e));
                 });
+            }
+        }
+
+        function tryAutoFullscreenAndLandscape(video) {
+            if (video.requestFullscreen) {
+                video.requestFullscreen().catch(err => console.log("Fullscreen request prevented:", err));
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(err => console.log("Orientation lock prevented:", err));
             }
         }
 
