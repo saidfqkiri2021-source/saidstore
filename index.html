@@ -76,12 +76,16 @@
                 </div>
             </div>
 
-            <!-- Telegram Channel Header Button -->
-            <div class="flex items-center gap-3">
-                <a href="https://t.me/SAIDANTIBAN1" target="_blank" class="tg-float-btn text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-2 border border-sky-400/40">
+            <!-- Top Header Buttons (Telegram + Settings) -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="https://t.me/SAIDANTIBAN1" target="_blank" class="tg-float-btn text-white px-3 sm:px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-2 border border-sky-400/40">
                     <i class="fa-brands fa-telegram text-base animate-bounce"></i>
-                    <span>قناة التليجرام</span>
+                    <span class="hidden sm:inline">قناة التليجرام</span>
                 </a>
+                <button onclick="openSettingsModal()" class="px-3.5 py-2 rounded-2xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition border border-slate-700 text-xs font-semibold flex items-center gap-2 backdrop-blur-md shadow-md" title="الإعدادات والمميزات">
+                    <i class="fa-solid fa-gear text-sky-400 text-sm"></i>
+                    <span class="hidden sm:inline">الإعدادات</span>
+                </button>
             </div>
         </div>
     </header>
@@ -113,7 +117,7 @@
                 </div>
                 <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                     <button onclick="toggleFavorite()" id="favBtn" class="px-4 py-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 transition border border-slate-700 text-xs font-semibold flex items-center gap-2 backdrop-blur-md" title="إضافة للمفضلة">
-                        <i class="fa-regular fa-heart text-base text-rose-400"></i> المفضلة
+                        <i class="fa-regular fa-heart text-base text-rose-400" id="favIcon"></i> <span id="favText">المفضلة</span>
                     </button>
                     <button onclick="reloadStream()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white transition shadow-lg shadow-sky-600/30 text-xs font-semibold flex items-center gap-2" title="تحديث البث">
                         <i class="fa-solid fa-rotate"></i> إعادة تحميل
@@ -150,9 +154,58 @@
 
     </main>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-6 border border-sky-500/30 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="font-black text-white flex items-center gap-2.5 text-base">
+                    <i class="fa-solid fa-gear text-sky-400"></i> إعدادات التطبيق والمميزات
+                </h3>
+                <button onclick="closeSettingsModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Setting: OLED Pure Black Theme -->
+                <div class="flex items-center justify-between bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
+                    <div>
+                        <h4 class="font-bold text-sm text-white">وضع الشاشة السوداء (OLED)</h4>
+                        <p class="text-[11px] text-slate-400">تخفيض الإضاءة وخلفية سوداء بالكامل</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="oledToggle" onchange="toggleOledMode(this.checked)" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                    </label>
+                </div>
+
+                <!-- App Info & WhatsApp Contact -->
+                <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-sm text-white">Said TV Live</h4>
+                            <p class="text-[11px] text-sky-400">إصدار التطبيق: 1.00</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[11px] font-bold border border-emerald-500/20">مستقر</span>
+                    </div>
+                    <a href="https://wa.me/212623842258?text=مرحباً، أود التواصل معك بخصوص تطبيق Said TV Live" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>واتساب</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="closeSettingsModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-600 text-white font-bold text-xs shadow-lg shadow-sky-600/30 transition hover:opacity-90">
+                    حفظ وإغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/80 mt-auto bg-slate-950/50">
-        Said TV Live &copy; 2026 - جميع الحقوق محفوظة | تصميم متطور فائق السرعة
+        Said TV Live &copy; 2026 - جميع الحقوق محفوظة | الإصدار 1.00
     </footer>
 
     <script>
@@ -326,11 +379,27 @@
             { name: "MBC 5", url: "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-5/ee6b000cee0629411b666ab26cb13e9b/index.m3u8", group: "عالمية وعامة", type: "تصنيف" }
         ];
 
-        let currentView = 'main'; // 'main', 'countries_list', 'country_channels', 'category_channels'
+        let currentView = 'main'; // 'main', 'countries_list', 'country_channels', 'category_channels', 'favorites'
         let selectedCountry = null;
         let selectedCategory = null;
         let currentChannel = null;
         let hls = null;
+
+        function getFavorites() {
+            try {
+                return JSON.parse(localStorage.getItem('said_tv_favs')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveFavorites(favs) {
+            localStorage.setItem('said_tv_favs', JSON.stringify(favs));
+        }
+
+        function isFavorite(url) {
+            return getFavorites().some(f => f.url === url);
+        }
 
         function initApp() {
             renderMainCategories();
@@ -345,27 +414,24 @@
             
             const listEl = document.getElementById('channelsList');
             listEl.innerHTML = '';
-            document.getElementById('channelCount').textContent = '2 أقسام';
+            
+            const favsCount = getFavorites().length;
+            document.getElementById('channelCount').textContent = '3 أقسام';
 
             const sections = [
-                { name: "قنوات تلفزيونية", icon: "fa-earth-americas", desc: "تصفح القنوات مرتبة حسب الدول (المغرب، الجزائر، مصر...)", count: getCountByType('دولة') },
-                { name: "التصنيفات العامة والأفلام والأطفال", icon: "fa-clapperboard", desc: "أفلام، مسلسلات، قنوات أطفال، وتصنيفات دولية", count: getCountByType('تصنيف') }
+                { name: "القنوات المفضلة", icon: "fa-heart", desc: "القنوات التي قمت بحفظها للمشاهدة السريعة", count: `${favsCount} قناة`, action: renderFavoritesList },
+                { name: "قنوات تلفزيونية", icon: "fa-earth-americas", desc: "تصفح القنوات مرتبة حسب الدول (المغرب، الجزائر، مصر...)", count: getCountByType('دولة'), action: renderCountriesList },
+                { name: "التصنيفات العامة والأفلام والأطفال", icon: "fa-clapperboard", desc: "أفلام، مسلسلات، قنوات أطفال، وتصنيفات دولية", count: getCountByType('تصنيف'), action: renderCategoriesList }
             ];
 
             sections.forEach(sec => {
                 const div = document.createElement('div');
                 div.className = 'country-card flex items-center justify-between p-4 rounded-2xl cursor-pointer';
-                div.onclick = () => {
-                    if (sec.name === "قنوات تلفزيونية") {
-                        renderCountriesList();
-                    } else {
-                        renderCategoriesList();
-                    }
-                };
+                div.onclick = sec.action;
                 div.innerHTML = `
                     <div class="flex items-center space-x-3.5 space-x-reverse">
                         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-600/30 to-blue-600/30 text-sky-400 border border-sky-500/30 flex items-center justify-center text-lg shadow-sm">
-                            <i class="fa-solid ${sec.icon}"></i>
+                            <i class="fa-solid ${sec.icon} ${sec.name === 'القنوات المفضلة' ? 'text-rose-400' : ''}"></i>
                         </div>
                         <div>
                             <h4 class="font-extrabold text-sm text-white">${sec.name}</h4>
@@ -385,6 +451,14 @@
             const set = new Set();
             allChannels.filter(c => c.type === type).forEach(c => set.add(c.group));
             return `${set.size} قسم`;
+        }
+
+        function renderFavoritesList() {
+            currentView = 'favorites';
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('panelTitle').innerHTML = '<i class="fa-solid fa-heart text-rose-500"></i> القنوات المفضلة';
+            const favs = getFavorites();
+            displayChannelsList(favs);
         }
 
         function renderCountriesList() {
@@ -499,6 +573,7 @@
                 if (currentView === 'main') renderMainCategories();
                 else if (currentView === 'countries_list') renderCountriesList();
                 else if (currentView === 'categories_list') renderCategoriesList();
+                else if (currentView === 'favorites') renderFavoritesList();
                 return;
             }
 
@@ -520,6 +595,7 @@
 
             channels.forEach(channel => {
                 const isSelected = currentChannel && currentChannel.url === channel.url;
+                const isFav = isFavorite(channel.url);
                 const div = document.createElement('div');
                 div.className = `channel-card flex items-center justify-between p-3.5 rounded-2xl cursor-pointer ${isSelected ? 'bg-sky-600/20 border-sky-500/80 shadow-lg shadow-sky-500/20' : 'bg-slate-900/40'}`;
                 div.onclick = () => playChannel(channel);
@@ -534,8 +610,11 @@
                             <span class="text-[11px] text-sky-400/80 font-medium truncate">${channel.group}</span>
                         </div>
                     </div>
-                    <div class="text-xs ${isSelected ? 'text-sky-400 font-black' : 'text-slate-500'} flex-shrink-0 pr-2">
-                        <i class="fa-solid ${isSelected ? 'fa-signal animate-pulse text-sky-400' : 'fa-play'}"></i>
+                    <div class="flex items-center gap-3">
+                        ${isFav ? '<i class="fa-solid fa-heart text-rose-500 text-xs" title="في المفضلة"></i>' : ''}
+                        <div class="text-xs ${isSelected ? 'text-sky-400 font-black' : 'text-slate-500'} flex-shrink-0 pr-2">
+                            <i class="fa-solid ${isSelected ? 'fa-signal animate-pulse text-sky-400' : 'fa-play'}"></i>
+                        </div>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -548,6 +627,8 @@
             document.getElementById('currentCategory').textContent = channel.group;
             document.getElementById('currentLogoLetter').textContent = channel.name.charAt(0);
             
+            updateFavoriteButtonState();
+
             document.getElementById('playerOverlay').classList.add('opacity-0', 'pointer-events-none');
 
             const video = document.getElementById('videoPlayer');
@@ -589,6 +670,21 @@
             }
         }
 
+        function updateFavoriteButtonState() {
+            if (!currentChannel) return;
+            const favIcon = document.getElementById('favIcon');
+            const favText = document.getElementById('favText');
+            if (isFavorite(currentChannel.url)) {
+                favIcon.classList.remove('fa-regular', 'text-rose-400');
+                favIcon.classList.add('fa-solid', 'text-rose-500');
+                favText.textContent = 'إزالة من المفضلة';
+            } else {
+                favIcon.classList.remove('fa-solid', 'text-rose-500');
+                favIcon.classList.add('fa-regular', 'text-rose-400');
+                favText.textContent = 'المفضلة';
+            }
+        }
+
         function reloadStream() {
             if (currentChannel) {
                 playChannel(currentChannel);
@@ -596,14 +692,39 @@
         }
 
         function toggleFavorite() {
-            const btn = document.getElementById('favBtn');
-            const icon = btn.querySelector('i');
-            if (icon.classList.contains('fa-regular')) {
-                icon.classList.remove('fa-regular', 'text-rose-400');
-                icon.classList.add('fa-solid', 'text-rose-500');
+            if (!currentChannel) {
+                alert('الرجاء اختيار قناة أولاً لإضافتها إلى المفضلة');
+                return;
+            }
+            let favs = getFavorites();
+            const index = favs.findIndex(f => f.url === currentChannel.url);
+            if (index > -1) {
+                favs.splice(index, 1);
             } else {
-                icon.classList.remove('fa-solid', 'text-rose-500');
-                icon.classList.add('fa-regular', 'text-rose-400');
+                favs.push(currentChannel);
+            }
+            saveFavorites(favs);
+            updateFavoriteButtonState();
+            
+            if (currentView === 'favorites') {
+                renderFavoritesList();
+            }
+        }
+
+        // Settings Modal Functions
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function toggleOledMode(enabled) {
+            if (enabled) {
+                document.body.style.backgroundColor = '#000000';
+            } else {
+                document.body.style.backgroundColor = '#030712';
             }
         }
 
