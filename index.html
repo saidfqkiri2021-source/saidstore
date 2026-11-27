@@ -53,7 +53,7 @@
       gap: 12px;
     }
     .back-btn {
-      display: none; /* يظهر فقط عند الانتقال لأي قسم */
+      display: none;
       background: none;
       border: 1px solid var(--border-color);
       color: var(--text-main);
@@ -237,7 +237,6 @@
   <div class="filter-section">
     <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن اسم القناة..." oninput="filterChannels()" />
     
-    <!-- الأقسام والبلدان -->
     <div class="tabs-container" id="tabsContainer">
       <button class="tab-btn active" onclick="setCategory('all', this)">الكل</button>
       <button class="tab-btn" onclick="setCategory('المغرب', this)">🇲🇦 المغرب</button>
@@ -273,7 +272,7 @@
     const allChannels = [
       // 🇲🇦 المغرب
       { name: "2M Monde HD", url: "https://r.eu.cdn-redge.media/livehls/oeu/mt/live/2m_monde/live.livx/playlist.m3u8", logo: "https://i.imgur.com/MvpntzA.png", tag: "General", group: "المغرب" },
-      { name: "Al Maghribia (1080p)", url: "http://185.9.2.18/chid_205/index.m3u8", logo: "https://i.imgur.com/7GaahYh.png", tag: "General", group: "المغرب" },
+      { name: "Al Maghribia (1080p)", url: "https://corsproxy.io/?http://185.9.2.18/chid_205/index.m3u8", logo: "https://i.imgur.com/7GaahYh.png", tag: "General", group: "المغرب" },
       { name: "Chada TV (720p)", url: "https://edge13.vedge.infomaniak.com/livecast/ik:chadatv/manifest.m3u8", logo: "https://freebox.cdn.scw.iliad.fr/medium_Logo_chada_tv_2ee1412d38.png", tag: "General", group: "المغرب" },
 
       // 🇩🇿 الجزائر
@@ -283,10 +282,10 @@
       { name: "Wataniya 1 HD", url: "https://live.tanitweb.com/wataniya1/index.m3u8", logo: "https://upload.wikimedia.org/wikipedia/ar/2/25/Wataniya_1_logo.png", tag: "General", group: "تونس" },
 
       // 🇪🇬 مصر
-      { name: "Nile Drama", url: "http://185.9.2.18/chid_352/index.m3u8", logo: "https://i.imgur.com/FasJFMM.png", tag: "دراما مصرية", group: "مصر" },
+      { name: "Nile Drama", url: "https://corsproxy.io/?http://185.9.2.18/chid_352/index.m3u8", logo: "https://i.imgur.com/FasJFMM.png", tag: "دراما مصرية", group: "مصر" },
 
       // ⚽ رياضة
-      { name: "Arryadia (720p)", url: "http://149.100.11.252:8000/play/a065/index.m3u8", logo: "https://i.imgur.com/XjzK3gZ.png", tag: "Sports", group: "رياضة" },
+      { name: "Arryadia (720p)", url: "https://corsproxy.io/?http://149.100.11.252:8000/play/a065/index.m3u8", logo: "https://i.imgur.com/XjzK3gZ.png", tag: "Sports", group: "رياضة" },
 
       // 🎬 أفلام ومسلسلات
       { name: "Aflam", url: "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8", logo: "https://i.imgur.com/cTLj7Yt.png", tag: "أفلام عربية", group: "أفلام ومسلسلات" },
@@ -312,7 +311,7 @@
       { name: "Medi1TV Arabic (1080p)", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-arabic_g90v4ec/playlist.m3u8", logo: "https://i.imgur.com/3YsZPY6.jpeg", tag: "News", group: "أخبار" },
       { name: "Medi1TV Afrique (1080p)", url: "https://cdn.live.easybroadcast.io/abr_corp/83_medi1tv-afrique_tm7tu45/playlist.m3u8", logo: "https://i.imgur.com/a20DHnj.png", tag: "News", group: "أخبار" },
 
-      // 🎵 موسيقى وأغاني (فارغ جاهز لإضافة القنوات مستقبلاً)
+      // 🎵 موسيقى وأغاني (جاهز)
       // { name: "اسم القناة", url: "رابط البث", logo: "رابط الشعار", tag: "موسيقى", group: "موسيقى وأغاني" },
 
       // 🌍 عالمية وعامة
@@ -362,11 +361,6 @@
       statusEl.textContent = "جاري التحميل...";
 
       cleanupPlayer();
-
-      if (window.location.protocol === "https:" && channel.url.startsWith("http://")) {
-        statusEl.textContent = "رابط HTTP غير مدعوم على HTTPS";
-        return;
-      }
 
       if (window.Hls && Hls.isSupported()) {
         hls = new Hls({ enableWorker: true });
@@ -469,4 +463,28 @@
           item.onclick = () => playChannel(ch, item, true);
           listEl.appendChild(item);
 
-          
+          if (firstChannel) {
+            playChannel(ch, item, false);
+            firstChannel = false;
+          }
+        });
+      }
+    }
+
+    function filterChannels() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+
+      const filtered = allChannels.filter(ch => {
+        const matchesQuery = ch.name.toLowerCase().includes(query) || ch.tag.toLowerCase().includes(query);
+        const matchesCategory = currentCategory === "all" || ch.group === currentCategory;
+        return matchesQuery && matchesCategory;
+      });
+
+      renderChannels(filtered);
+    }
+
+    // التشغيل الأولي
+    renderChannels(allChannels);
+  </script>
+</body>
+</html>
